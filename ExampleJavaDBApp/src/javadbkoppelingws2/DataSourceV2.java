@@ -42,8 +42,8 @@ public class DataSourceV2
 
       dbserver="localhost";
       database="test_db";
-      username = "root";
-      password = "Knabbel2509";
+      username = "javadb";
+      password = "j4v4dbProject!";
       
       
    }
