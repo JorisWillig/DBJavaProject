@@ -5,6 +5,7 @@
  */
 package javadbkoppelingws2;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.sql.Statement;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -27,41 +29,68 @@ public class App extends JFrame{
         NameSearch, TownSearch;
     }
     
-    JPanel panel = new JPanel();
-    JTextField searchBox = new JTextField();
+    JPanel topPanel = new JPanel();
+    JPanel panel1 = new JPanel();
+    JPanel panel2 = new JPanel();
+    JPanel panel3 = new JPanel();
+    
+    JTabbedPane tabbedPane = new JTabbedPane();
+    JTextField nameBox = new JTextField();
+    JTextField townBox = new JTextField();
+    JTextField emailBox = new JTextField();
     JTextArea resultBox = new JTextArea();
-    JButton nameSearchButton = new JButton();
-    JButton townSearchButton = new JButton();
+    JButton searchButton = new JButton();
     
     static Connection conn;
     
     public App() {
-        nameSearchButton.setSize(190, 30);
-        nameSearchButton.setLocation(20,60);
-        nameSearchButton.setText("Zoek op Naam");
-        nameSearchButton.addActionListener(new zoekKnopListener(ButtonAction.NameSearch));
-        townSearchButton.setSize(190, 30);
-        townSearchButton.setLocation(230,60);
-        townSearchButton.setText("Zoek op Stad");
-        townSearchButton.addActionListener(new zoekKnopListener(ButtonAction.TownSearch));
-        searchBox.setSize(400, 30);
-        searchBox.setLocation(20, 20);
-        resultBox.setSize(400, 300);
-        resultBox.setLocation(20, 100);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setExtendedState(MAXIMIZED_BOTH);
         
-        panel.setLayout(null);
-        panel.add(searchBox);
-        panel.add(resultBox);
-        panel.add(nameSearchButton);
-        panel.add(townSearchButton);
-        add(panel);
+        panel1.setLayout(null);
+        
+        tabbedPane.addTab("Search in students", panel1);
+        tabbedPane.addTab("Overviews", panel2);
+        tabbedPane.addTab("Add entity", panel3);
+        
+        topPanel.setLayout(new BorderLayout());
+        topPanel.add(tabbedPane);
+        add(topPanel);
+        
+        int width = getBounds().width;
+        int height = getBounds().height;
+        
+        int X_MARGIN = width/40;
+        int Y_MARGIN = height/40;
+        int textFieldHeight = 30;
+        
+        searchButton.setSize(190, 30);
+        searchButton.setLocation(20, 100);
+        searchButton.setText("Zoek op Stad");
+        searchButton.addActionListener(new zoekKnopListener(ButtonAction.TownSearch));
+        nameBox.setSize(width/2 - X_MARGIN*2, textFieldHeight);
+        townBox.setSize(width/2 - X_MARGIN*2, textFieldHeight);
+        emailBox.setSize(width/2 - X_MARGIN*2, textFieldHeight);
+        nameBox.setLocation(X_MARGIN, Y_MARGIN);
+        townBox.setLocation(X_MARGIN, Y_MARGIN*2+textFieldHeight);
+        emailBox.setLocation(X_MARGIN, Y_MARGIN*3+textFieldHeight*2);
+        resultBox.setSize(width/2-X_MARGIN*2, height-Y_MARGIN*2-150);
+        resultBox.setLocation(width/2+X_MARGIN, Y_MARGIN);
+        
+        JButton button1 = new JButton();
+        JButton button2 = new JButton();
+        JButton button3 = new JButton();
+
+        panel1.add(nameBox);
+        panel1.add(townBox);
+        panel1.add(emailBox);
+        panel1.add(resultBox);
+        panel1.add(searchButton);
     }
     
     public static void main(String[] args) {
         App app = new App();
-        app.setVisible(true);
-        app.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        app.setSize(500,500);
         
         try {
             conn = new DataSourceV2().getConnection();
@@ -101,7 +130,7 @@ public class App extends JFrame{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String zoekTekst = searchBox.getText();
+            String zoekTekst = nameBox.getText();
             
             if(action == ButtonAction.NameSearch) {
                 doQuery("SELECT * FROM customers WHERE customer_name LIKE '%" + zoekTekst + "%'");
