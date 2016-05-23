@@ -29,10 +29,18 @@ public class App extends JFrame{
         NameSearch, TownSearch;
     }
     
+    int WIDTH;
+    int HEIGHT;
+    
+    int X_MARGIN;
+    int Y_MARGIN;
+    int TEXT_FIELD_HEIGHT;
+    int TEXT_FIELD_WIDTH;
+    
     JPanel topPanel = new JPanel();
-    JPanel panel1 = new JPanel();
-    JPanel panel2 = new JPanel();
-    JPanel panel3 = new JPanel();
+    JPanel searchPane = new JPanel();
+    JPanel overviewPane = new JPanel();
+    JPanel editPanel = new JPanel();
     
     JTabbedPane tabbedPane = new JTabbedPane();
     JTextField nameBox = new JTextField();
@@ -48,45 +56,57 @@ public class App extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
         
-        panel1.setLayout(null);
+        searchPane.setLayout(null);
         
-        tabbedPane.addTab("Search in students", panel1);
-        tabbedPane.addTab("Overviews", panel2);
-        tabbedPane.addTab("Add entity", panel3);
+        tabbedPane.addTab("Search in students", searchPane);
+        tabbedPane.addTab("Overviews", overviewPane);
+        tabbedPane.addTab("Add entity", editPanel);
         
         topPanel.setLayout(new BorderLayout());
         topPanel.add(tabbedPane);
         add(topPanel);
         
-        int width = getBounds().width;
-        int height = getBounds().height;
+        //Initiating the Global variables
+        WIDTH = getBounds().width;
+        HEIGHT = getBounds().height;
         
-        int X_MARGIN = width/40;
-        int Y_MARGIN = height/40;
-        int textFieldHeight = 30;
+        X_MARGIN = WIDTH/40;
+        Y_MARGIN = HEIGHT/40;
+        TEXT_FIELD_HEIGHT = 30;
+        TEXT_FIELD_WIDTH = 300;
         
-        searchButton.setSize(190, 30);
-        searchButton.setLocation(20, 100);
-        searchButton.setText("Zoek op Stad");
-        searchButton.addActionListener(new zoekKnopListener(ButtonAction.TownSearch));
-        nameBox.setSize(width/2 - X_MARGIN*2, textFieldHeight);
-        townBox.setSize(width/2 - X_MARGIN*2, textFieldHeight);
-        emailBox.setSize(width/2 - X_MARGIN*2, textFieldHeight);
+        fillSearchPane();
+    }
+    
+    private void fillSearchPane() {
+         // Setting the size of the elements on the left side
+        nameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        townBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        emailBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        searchButton.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        
+        // Setting the location of the elements on the left side
         nameBox.setLocation(X_MARGIN, Y_MARGIN);
-        townBox.setLocation(X_MARGIN, Y_MARGIN*2+textFieldHeight);
-        emailBox.setLocation(X_MARGIN, Y_MARGIN*3+textFieldHeight*2);
-        resultBox.setSize(width/2-X_MARGIN*2, height-Y_MARGIN*2-150);
-        resultBox.setLocation(width/2+X_MARGIN, Y_MARGIN);
+        townBox.setLocation(X_MARGIN, Y_MARGIN*2+TEXT_FIELD_HEIGHT);
+        emailBox.setLocation(X_MARGIN, Y_MARGIN*3+TEXT_FIELD_HEIGHT*2);
+        searchButton.setLocation(X_MARGIN, Y_MARGIN*4+TEXT_FIELD_HEIGHT*3);
+        searchButton.setText("Zoek");
+        searchButton.addActionListener(new zoekKnopListener(ButtonAction.TownSearch));
+        
+        
+        resultBox.setSize(WIDTH/2-X_MARGIN*2, HEIGHT-Y_MARGIN*2-150);
+        resultBox.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
+        
         
         JButton button1 = new JButton();
         JButton button2 = new JButton();
         JButton button3 = new JButton();
 
-        panel1.add(nameBox);
-        panel1.add(townBox);
-        panel1.add(emailBox);
-        panel1.add(resultBox);
-        panel1.add(searchButton);
+        searchPane.add(nameBox);
+        searchPane.add(townBox);
+        searchPane.add(emailBox);
+        searchPane.add(resultBox);
+        searchPane.add(searchButton);
     }
     
     public static void main(String[] args) {
@@ -109,7 +129,7 @@ public class App extends JFrame{
                 int counter = 0;
                 resultBox.setText(null);
                 while(res.next()) {
-                    resultBox.append(res.getString("customer_id") + " " +res.getString("customer_name") + " " + res.getString("customer_town") + "\n");
+                    resultBox.append(res.getString("customer_id") + " " +res.getString("first_name") + " " + res.getString("address") + "\n");
                     counter++;
                 }
                 if(counter == 0) {
@@ -130,17 +150,9 @@ public class App extends JFrame{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String zoekTekst = nameBox.getText();
+            String firstNameText = nameBox.getText();
             
-            if(action == ButtonAction.NameSearch) {
-                doQuery("SELECT * FROM customers WHERE customer_name LIKE '%" + zoekTekst + "%'");
-            } else if(action == ButtonAction.TownSearch) {
-                doQuery("SELECT * FROM customers WHERE customer_town LIKE '%" + zoekTekst + "%'");
-            }
-            
-            
+            doQuery("SELECT * FROM customers WHERE first_name LIKE '%" + firstNameText + "%'");
         }
-    
     }
-    
 }
