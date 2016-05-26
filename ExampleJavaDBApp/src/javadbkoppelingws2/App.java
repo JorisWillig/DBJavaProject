@@ -37,17 +37,22 @@ public class App extends JFrame{
     int TEXT_FIELD_HEIGHT;
     int TEXT_FIELD_WIDTH;
     
+    JTabbedPane tabbedPane = new JTabbedPane();
     JPanel topPanel = new JPanel();
-    JPanel searchPane = new JPanel();
-    JPanel overviewPane = new JPanel();
+    JPanel searchPanel = new JPanel();
+    JPanel overviewPanel = new JPanel();
     JPanel editPanel = new JPanel();
     
-    JTabbedPane tabbedPane = new JTabbedPane();
+    // Content of searchPanel
     JTextField nameBox = new JTextField();
     JTextField townBox = new JTextField();
     JTextField emailBox = new JTextField();
     JTextArea resultBox = new JTextArea();
     JButton searchButton = new JButton();
+    
+    // Content of overviewPanel
+    
+    // Content of editPanel
     
     static Connection conn;
     
@@ -56,10 +61,10 @@ public class App extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
         
-        searchPane.setLayout(null);
+        searchPanel.setLayout(null);
         
-        tabbedPane.addTab("Search in students", searchPane);
-        tabbedPane.addTab("Overviews", overviewPane);
+        tabbedPane.addTab("Search in students", searchPanel);
+        tabbedPane.addTab("Overviews", overviewPanel);
         tabbedPane.addTab("Add entity", editPanel);
         
         topPanel.setLayout(new BorderLayout());
@@ -102,11 +107,11 @@ public class App extends JFrame{
         JButton button2 = new JButton();
         JButton button3 = new JButton();
 
-        searchPane.add(nameBox);
-        searchPane.add(townBox);
-        searchPane.add(emailBox);
-        searchPane.add(resultBox);
-        searchPane.add(searchButton);
+        searchPanel.add(nameBox);
+        searchPanel.add(townBox);
+        searchPanel.add(emailBox);
+        searchPanel.add(resultBox);
+        searchPanel.add(searchButton);
     }
     
     public static void main(String[] args) {
