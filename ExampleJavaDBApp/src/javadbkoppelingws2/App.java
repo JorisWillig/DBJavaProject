@@ -35,7 +35,7 @@ public class App extends JFrame {
     SearchPanel searchPanel;
     AddPanel addPanel;
     OverviewPanel overviewPanel;
-//    SignupPanel signupPanel;
+    SignupPanel signupPanel;
 
     JTabbedPane tabbedPane = new JTabbedPane();
     JPanel topPanel = new JPanel();
@@ -49,19 +49,19 @@ public class App extends JFrame {
         topPanel.add(tabbedPane);
         add(topPanel);
 
-        //Initiating the Global variables
+//        Initiating the Global variables
         WIDTH = getBounds().width;
         HEIGHT = getBounds().height;
 
         searchPanel = new SearchPanel(WIDTH, HEIGHT);
         addPanel = new AddPanel(WIDTH, HEIGHT);
         overviewPanel = new OverviewPanel(WIDTH, HEIGHT);
-        //signupPanel = new SignupPanel(WIDTH, HEIGHT);
+        signupPanel = new SignupPanel(WIDTH, HEIGHT);
 
         tabbedPane.addTab("Zoeken", searchPanel);
         tabbedPane.addTab("Toevoegen", addPanel);
         tabbedPane.addTab("Overzichten", overviewPanel);
-        //tabbedPane.addTab("Inschrijven", signupPanel);
+        tabbedPane.addTab("Inschrijven", signupPanel);
 
     }
 
