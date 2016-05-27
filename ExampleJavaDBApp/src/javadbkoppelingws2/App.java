@@ -58,6 +58,11 @@ public class App extends JFrame{
         overviewPanel = new OverviewPanel(WIDTH, HEIGHT);
         signupPanel = new SignupPanel(WIDTH, HEIGHT);
         
+        tabbedPane.addTab("Zoeken", searchPanel);
+        tabbedPane.addTab("Toevoegen", addPanel);
+        tabbedPane.addTab("Overzichten", overviewPanel);
+        tabbedPane.addTab("Inschrijven", signupPanel);
+        
     }
     
     private void fillSearchPane() {

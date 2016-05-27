@@ -8,6 +8,7 @@ package javadbkoppelingws2;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -17,13 +18,20 @@ import javax.swing.JTextField;
  */
 public class SearchPanel extends Tab{
     
+    JLabel firstNameLabel = new JLabel("Voornaam:");
+    JLabel infixLabel = new JLabel("Tussenvoegsel:");
+    JLabel surNameLabel = new JLabel("Achternaam:");
+    JLabel emailLabel = new JLabel("Emailadres:");
+    JLabel addressLabel = new JLabel("Adres:");
+    JLabel trajectoryLabel = new JLabel("Traject:");
+    
     JTextField firstNameBox = new JTextField();
     JTextField infixBox = new JTextField();
     JTextField surNameBox = new JTextField();
     JTextField emailBox = new JTextField();
-    JTextField adresBox = new JTextField();
-    JTextArea resultBox = new JTextArea();
-    JButton searchButton = new JButton();
+    JTextField addressBox = new JTextField();
+    JTextField trajectoryBox = new JTextField();
+    JButton searchButton = new JButton("Zoek");
     
     private enum ButtonAction {
         Zoek
@@ -38,17 +46,29 @@ public class SearchPanel extends Tab{
     
     private void fillLeft() {
         firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        infixBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        surNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        
         
         firstNameBox.setLocation(X_MARGIN, Y_MARGIN);
-        
-        
-        
-        resultBox.setSize(WIDTH/2-X_MARGIN*2, HEIGHT-Y_MARGIN*2-150);
-        resultBox.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
 
+        add(firstNameLabel);
+        add(infixLabel);
+        add(surNameLabel);
+        add(emailLabel);
+        add(addressLabel);
+        add(trajectoryLabel);
+        add(searchButton);
+        
         add(firstNameBox);
+        add(infixBox);
+        add(surNameBox);
         add(emailBox);
-        add(resultBox);
+        add(addressBox);
+        add(trajectoryBox);
         add(searchButton);
     }
     
