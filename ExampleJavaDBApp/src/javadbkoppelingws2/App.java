@@ -39,8 +39,6 @@ public class App extends JFrame{
     
     JTabbedPane tabbedPane = new JTabbedPane();
     JPanel topPanel = new JPanel();
-    JPanel overviewPanel = new JPanel();
-    JPanel editPanel = new JPanel();
         
     public App() {
         setVisible(true);

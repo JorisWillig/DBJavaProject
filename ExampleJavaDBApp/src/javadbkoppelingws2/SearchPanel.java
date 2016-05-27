@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 public class SearchPanel extends Tab{
     
     JTextField firstNameBox = new JTextField();
+    JTextField infixBox = new JTextField();
     JTextField surNameBox = new JTextField();
     JTextField emailBox = new JTextField();
     JTextField adresBox = new JTextField();
@@ -36,25 +37,16 @@ public class SearchPanel extends Tab{
     }
     
     private void fillLeft() {
-        nameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        townBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        emailBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        searchButton.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
         
-        // Setting the location of the elements on the left side
-        nameBox.setLocation(X_MARGIN, Y_MARGIN);
-        townBox.setLocation(X_MARGIN, Y_MARGIN*2+TEXT_FIELD_HEIGHT);
-        emailBox.setLocation(X_MARGIN, Y_MARGIN*3+TEXT_FIELD_HEIGHT*2);
-        searchButton.setLocation(X_MARGIN, Y_MARGIN*4+TEXT_FIELD_HEIGHT*3);
-        searchButton.setText("Zoek");
-        searchButton.addActionListener(new ButtonListener(ButtonAction.Zoek));
+        firstNameBox.setLocation(X_MARGIN, Y_MARGIN);
+        
         
         
         resultBox.setSize(WIDTH/2-X_MARGIN*2, HEIGHT-Y_MARGIN*2-150);
         resultBox.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
 
-        add(nameBox);
-        add(townBox);
+        add(firstNameBox);
         add(emailBox);
         add(resultBox);
         add(searchButton);
