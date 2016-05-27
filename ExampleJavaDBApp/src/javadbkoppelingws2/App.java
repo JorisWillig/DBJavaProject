@@ -33,7 +33,7 @@ public class App extends JFrame {
     int HEIGHT;
 
     SearchPanel searchPanel;
-//    AddPanel addPanel;
+    AddPanel addPanel;
     OverviewPanel overviewPanel;
 //    SignupPanel signupPanel;
 
@@ -56,12 +56,12 @@ public class App extends JFrame {
         searchPanel = new SearchPanel(WIDTH, HEIGHT);
         addPanel = new AddPanel(WIDTH, HEIGHT);
         overviewPanel = new OverviewPanel(WIDTH, HEIGHT);
-        signupPanel = new SignupPanel(WIDTH, HEIGHT);
+        //signupPanel = new SignupPanel(WIDTH, HEIGHT);
 
         tabbedPane.addTab("Zoeken", searchPanel);
         tabbedPane.addTab("Toevoegen", addPanel);
         tabbedPane.addTab("Overzichten", overviewPanel);
-        tabbedPane.addTab("Inschrijven", signupPanel);
+        //tabbedPane.addTab("Inschrijven", signupPanel);
 
     }
 

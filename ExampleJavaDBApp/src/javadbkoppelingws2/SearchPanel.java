@@ -7,6 +7,7 @@ package javadbkoppelingws2;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -33,6 +34,10 @@ public class SearchPanel extends Tab{
     JTextField trajectoryBox = new JTextField();
     JButton searchButton = new JButton("Zoek");
     
+    
+    ArrayList labels = new ArrayList<JLabel>();
+    ArrayList textFields = new ArrayList<JTextField>();
+    
     private enum ButtonAction {
         Zoek
     }
@@ -41,10 +46,15 @@ public class SearchPanel extends Tab{
     
     public SearchPanel(int width, int height) {
         super(width, height);
+        //fillArrays();
         fillLeft();
     }
     
     private void fillLeft() {
+//        for(JLabel label : labels) {
+//            
+//        }
+        
         firstNameLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
         infixLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
         surNameLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
