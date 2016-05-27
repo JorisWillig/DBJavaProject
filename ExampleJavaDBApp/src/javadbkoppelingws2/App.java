@@ -33,9 +33,9 @@ public class App extends JFrame{
     int HEIGHT;
     
     SearchPanel searchPanel;
-    AddPanel addPanel;
+//    AddPanel addPanel;
     OverviewPanel overviewPanel;
-    SignupPanel signupPanel;
+//    SignupPanel signupPanel;
     
     JTabbedPane tabbedPane = new JTabbedPane();
     JPanel topPanel = new JPanel();
@@ -54,9 +54,9 @@ public class App extends JFrame{
         HEIGHT = getBounds().height;
         
         searchPanel = new SearchPanel(WIDTH, HEIGHT);
-        addPanel = new AddPanel(WIDTH, HEIGHT);
+//        addPanel = new AddPanel(WIDTH, HEIGHT);
         overviewPanel = new OverviewPanel(WIDTH, HEIGHT);
-        signupPanel = new SignupPanel(WIDTH, HEIGHT);
+//        signupPanel = new SignupPanel(WIDTH, HEIGHT);
         
         tabbedPane.addTab("Zoeken", searchPanel);
         tabbedPane.addTab("Toevoegen", addPanel);

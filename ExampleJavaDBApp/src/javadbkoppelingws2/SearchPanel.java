@@ -45,6 +45,13 @@ public class SearchPanel extends Tab{
     }
     
     private void fillLeft() {
+        firstNameLabel.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        infixLabel.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        surNameLabel.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameLabel.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameLabel.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameLabel.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        
         firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
         infixBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
         surNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
