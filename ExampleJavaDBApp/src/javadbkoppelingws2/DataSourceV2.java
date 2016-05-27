@@ -40,10 +40,10 @@ public class DataSourceV2
       }
 
 
-      dbserver="localhost";
-      database="test_db";
-      username = "javadb";
-      password = "j4v4dbProject!";
+      dbserver="meru.hhs.nl";
+      database="15077179";
+      username = "15077179";
+      password = "ox4Eth7ohp";
       
       
    }

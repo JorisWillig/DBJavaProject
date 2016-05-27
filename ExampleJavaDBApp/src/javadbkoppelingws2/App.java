@@ -32,10 +32,7 @@ public class App extends JFrame{
     int WIDTH;
     int HEIGHT;
     
-    int X_MARGIN;
-    int Y_MARGIN;
-    int TEXT_FIELD_HEIGHT;
-    int TEXT_FIELD_WIDTH;
+    
     
     JTabbedPane tabbedPane = new JTabbedPane();
     JPanel topPanel = new JPanel();
@@ -53,8 +50,6 @@ public class App extends JFrame{
     // Content of overviewPanel
     
     // Content of editPanel
-    
-    static Connection conn;
     
     public App() {
         setVisible(true);
@@ -75,10 +70,7 @@ public class App extends JFrame{
         WIDTH = getBounds().width;
         HEIGHT = getBounds().height;
         
-        X_MARGIN = WIDTH/40;
-        Y_MARGIN = HEIGHT/40;
-        TEXT_FIELD_HEIGHT = 30;
-        TEXT_FIELD_WIDTH = 300;
+        
         
         fillSearchPane();
     }
@@ -116,12 +108,6 @@ public class App extends JFrame{
     
     public static void main(String[] args) {
         App app = new App();
-        
-        try {
-            conn = new DataSourceV2().getConnection();
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
     }
     
     public void doQuery(String query) {
