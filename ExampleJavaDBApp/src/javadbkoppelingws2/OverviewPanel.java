@@ -9,6 +9,12 @@ package javadbkoppelingws2;
  *
  * @author Stef
  */
-public class OverviewPanel {
+public class OverviewPanel extends Tab{
+    
+    public OverviewPanel(int width, int height) {
+        super(width, height);
+    }
+    
+    
     
 }
