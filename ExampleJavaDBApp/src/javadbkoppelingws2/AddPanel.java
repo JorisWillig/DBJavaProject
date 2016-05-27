@@ -7,14 +7,13 @@ package javadbkoppelingws2;
 
 /**
  *
- * @author Stef
+ * @author Maru
  */
-public class OverviewPanel extends Tab{
-    
-    public OverviewPanel(int width, int height) {
+public class AddPanel extends Tab  {
+
+    public AddPanel(int width, int height) {
         super(width, height);
     }
-    
     
     
 }
