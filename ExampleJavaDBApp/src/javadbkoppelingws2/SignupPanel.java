@@ -9,7 +9,7 @@ package javadbkoppelingws2;
  *
  * @author Bas
  */
-public abstract class SignupPanel extends Tab {
+public class SignupPanel extends Tab {
 
     public SignupPanel(int width, int height) {
         super(width, height);
