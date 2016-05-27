@@ -46,8 +46,13 @@ public class SearchPanel extends Tab{
     
     public SearchPanel(int width, int height) {
         super(width, height);
-        //fillArrays();
+        fillArrays();
         fillLeft();
+    }
+    
+    private void fillArrays() {
+        labels.add(firstNameLabel);
+        labels.add(infixLabel);
     }
     
     private void fillLeft() {
