@@ -30,6 +30,8 @@ public abstract class Tab extends JPanel{
             e.printStackTrace();
         }
         
+        setLayout(null);
+        
         WIDTH = width;
         HEIGHT = height;
         

@@ -1,0 +1,6 @@
+contpers: 100
+Bedrijf: 20
+Student: 800
+School: 30
+opleiding: 150
+HHS_Student: 250
