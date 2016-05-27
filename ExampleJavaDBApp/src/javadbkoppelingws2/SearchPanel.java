@@ -35,8 +35,8 @@ public class SearchPanel extends Tab{
     JButton searchButton = new JButton("Zoek");
     
     
-    ArrayList labels = new ArrayList<JLabel>();
-    ArrayList textFields = new ArrayList<JTextField>();
+    ArrayList<JLabel> labels = new ArrayList<>();
+    ArrayList<JTextField> textFields = new ArrayList<>();
     
     private enum ButtonAction {
         Zoek
@@ -67,8 +67,13 @@ public class SearchPanel extends Tab{
     }
     
     private void fillLeft() {
-        for(JLabel label : labels) {
-            label.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+        for(int i = 0; i < labels.size(); i++) {
+            labels.get(i).setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+            labels.get(i).setLocation(X_MARGIN, Y_MARGIN*(i+1)+COMPONENT_HEIGHT*i);
+        }
+        
+        for(int i = 0; i < textFields.size(); i++) {
+            textFields.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         }
         
         firstNameLabel.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
