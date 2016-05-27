@@ -18,8 +18,8 @@ public abstract class Tab extends JPanel{
     
     int X_MARGIN;
     int Y_MARGIN;
-    int TEXT_FIELD_HEIGHT;
-    int TEXT_FIELD_WIDTH;
+    int COMPONENT_HEIGHT;
+    int COMPONENT_WIDTH;
     
     static Connection conn;
     
@@ -37,8 +37,8 @@ public abstract class Tab extends JPanel{
         
         X_MARGIN = WIDTH/40;
         Y_MARGIN = HEIGHT/40;
-        TEXT_FIELD_HEIGHT = 30;
-        TEXT_FIELD_WIDTH = 300;
+        COMPONENT_HEIGHT = 30;
+        COMPONENT_WIDTH = 300;
         
     }
     

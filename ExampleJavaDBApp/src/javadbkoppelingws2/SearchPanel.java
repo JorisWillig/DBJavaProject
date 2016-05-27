@@ -53,26 +53,37 @@ public class SearchPanel extends Tab{
     private void fillArrays() {
         labels.add(firstNameLabel);
         labels.add(infixLabel);
+        labels.add(surNameLabel);
+        labels.add(emailLabel);
+        labels.add(addressLabel);
+        labels.add(trajectoryLabel);
+        
+        textFields.add(firstNameBox);
+        textFields.add(infixBox);
+        textFields.add(surNameBox);
+        textFields.add(emailBox);
+        textFields.add(addressBox);
+        textFields.add(trajectoryBox);
     }
     
     private void fillLeft() {
-//        for(JLabel label : labels) {
-//            
-//        }
+        for(JLabel label : labels) {
+            label.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+        }
         
-        firstNameLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
-        infixLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
-        surNameLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
-        firstNameLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
-        firstNameLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
-        firstNameLabel.setSize(TEXT_FIELD_WIDTH/3*2, TEXT_FIELD_HEIGHT);
+        firstNameLabel.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+        infixLabel.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+        surNameLabel.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+        firstNameLabel.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+        firstNameLabel.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
+        firstNameLabel.setSize(COMPONENT_WIDTH/3*2, COMPONENT_HEIGHT);
         
-        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        infixBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        surNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
-        firstNameBox.setSize(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT);
+        firstNameBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        infixBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        surNameBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        firstNameBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        firstNameBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        firstNameBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         
         
         firstNameBox.setLocation(X_MARGIN, Y_MARGIN);
