@@ -112,6 +112,7 @@ public class SearchPanel extends Tab{
                 String em = emailBox.getText();
                 String traj = trajectoryBox.getText();
                 
+                
                 String query = "SELECT Student.student_id, voornaam, "
                         + "tussenvoegsel, achternaam, email, naam "
                         + "FROM Student, Traject, Student_Email, "
