@@ -114,17 +114,13 @@ public class SearchPanel extends Tab{
                 
                 String query = "SELECT Student.student_id, voornaam, "
                         + "tussenvoegsel, achternaam, email, naam "
-                        + "FROM Student LEFT JOIN Student_Email "
-                        + "ON Student.student_id = Student_Email.student_id "
-                        + "LEFT JOIN Student_Traject "
-                        + "ON Student.student_id = Student_Traject.student_id "
-                        + "LEFT JOIN Traject "
-                        + "ON Student_Traject.traject_id = Traject.traject_id "
-                        + "WHERE voornaam LIKE '%"+fN+"%' "
-                        + "AND tussenvoegsel LIKE '%"+iF+"%' "
-                        + "AND achternaam LIKE '%"+sN+"%' "
-                        + "AND COALESCE(email, ' ') LIKE '%"+em+"%' "
-                        + "AND COALESCE(naam, ' ') LIKE '%"+traj+"%'; ";
+                        + "FROM Student, Traject, Student_Email, "
+                        + "Student_Traject WHERE voornaam LIKE '%"+fN+"%' AND "
+                        + "tussenvoegsel LIKE '%"+iF+"%' AND achternaam LIKE '%"+sN+"%' "
+                        + "AND email LIKE '%"+em+"%' AND naam LIKE '%"+traj+"%' AND "
+                        + "Student.student_id = Student_Traject.student_id AND "
+                        + "Student_Traject.traject_id = Traject.traject_id AND "
+                        + "Student.student_id = Student_Email.student_id";
                 ResultSet res = doQuery(query);
                 
                 columnNames = new String[6];
@@ -177,6 +173,7 @@ public class SearchPanel extends Tab{
                 stat = conn.createStatement();
                 
                 res = stat.executeQuery(query);
+                int counter = 0;
             } catch(SQLException e1) {
                 e1.printStackTrace();
             }
