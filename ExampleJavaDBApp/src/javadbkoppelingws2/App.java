@@ -74,39 +74,4 @@ public class App extends JFrame {
         App app = new App();
     }
 
-//    public void doQuery(String query) {
-//        Statement stat;
-//            ResultSet res;
-//            try {
-//                stat = conn.createStatement();
-//                
-//                res = stat.executeQuery(query);
-//                int counter = 0;
-//                resultBox.setText(null);
-//                while(res.next()) {
-//                    resultBox.append(res.getString("customer_id") + " " +res.getString("first_name") + " " + res.getString("address") + "\n");
-//                    counter++;
-//                }
-//                if(counter == 0) {
-//                    resultBox.append("No results");
-//                }
-//            } catch(SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//    }
-//    public class zoekKnopListener implements ActionListener {
-//        
-//        ButtonAction action;
-//        
-//        public zoekKnopListener(ButtonAction action) {
-//            this.action = action;
-//        }
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            String firstNameText = nameBox.getText();
-//            
-//            doQuery("SELECT * FROM customers WHERE first_name LIKE '%" + firstNameText + "%'");
-//        }
-//    }
 }
