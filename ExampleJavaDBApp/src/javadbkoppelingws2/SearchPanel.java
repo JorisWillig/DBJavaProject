@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -39,6 +40,8 @@ public class SearchPanel extends Tab{
     JTextField trajectoryBox = new JTextField();
     JButton searchButton = new JButton("Zoek");
     
+    JButton editButton = new JButton("Edit");
+    
     ArrayList<JLabel> labels = new ArrayList<>();
     ArrayList<JTextField> textFields = new ArrayList<>();
     
@@ -48,7 +51,7 @@ public class SearchPanel extends Tab{
     JTable table;
     
     private enum ButtonAction {
-        Zoek
+        Zoek, Edit
     }
     
     JTextField nameSearch;
@@ -56,7 +59,8 @@ public class SearchPanel extends Tab{
     public SearchPanel(int width, int height) {
         super(width, height);
         fillArrays();
-        fillLeft();        
+        fillLeft();
+
     }
     
     private void fillArrays() {
@@ -96,6 +100,7 @@ public class SearchPanel extends Tab{
     public class ButtonListener implements ActionListener {
         
         ButtonAction action;
+        MyTableModel model;
         
         public ButtonListener(ButtonAction action) {
             this.action = action;
@@ -153,21 +158,51 @@ public class SearchPanel extends Tab{
                     if(table == null || rightPanel == null) {
                         table = new JTable(new MyTableModel(dataValues, columnNames));
                     
+                        model  = (MyTableModel)table.getModel();
+                        
                         table.setShowVerticalLines(false);
                         table.setRowSelectionAllowed(true);
                         table.setColumnSelectionAllowed(false);
                         
                         rightPanel = new JScrollPane(table);
                         rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*6 - COMPONENT_HEIGHT);
-                        rightPanel.setLocation(WIDTH/2-X_MARGIN, Y_MARGIN);
+                        rightPanel.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
                         add(rightPanel);
+                        
+                        editButton.setSize(WIDTH/2-X_MARGIN*2, COMPONENT_HEIGHT);
+                        editButton.setLocation(WIDTH/2+X_MARGIN, rightPanel.getY() + rightPanel.getHeight() + Y_MARGIN);
+                        editButton.addActionListener(new ButtonListener(ButtonAction.Edit));
+                        add(editButton);
                     }
-                    MyTableModel model = (MyTableModel)table.getModel();
+                    
                     model.setColumnNames(columnNames);
                     model.setNewData(dataValues);
                     repaint();
                 } catch(SQLException e2) {
                     //TODO
+                }
+            } else if(action == ButtonAction.Edit) {
+                if(table.getSelectedRow() >= 0) {
+                    model = (MyTableModel)table.getModel();
+                    int row = table.getSelectedRow();
+                    Object[] rowData = model.getRowData(row);
+                    ResultSet res = doQuery("SELECT student_id FROM Exchange_Student");
+                    boolean isExchange = false;
+                    try {
+                        while(res.next()) {
+                            if(rowData[0].toString().equals(res.getString("student_id"))) {
+                                isExchange = true;
+                            }
+                        }
+                        if(isExchange)
+                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam");
+                        else
+                            System.out.println("is geen exchange student");
+                    } catch(SQLException editEx) {
+                        
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(rightPanel, "Selecteer eerst een rij die u wilt bewerken", "error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -185,46 +220,5 @@ public class SearchPanel extends Tab{
             }
             return res;
         }
-    }
-    
-    public class MyTableModel extends AbstractTableModel {
-
-        Object[][] data;
-        String[] columns;
-        
-        public MyTableModel(Object[][] data, String[] columns) {
-            this.data = data;
-            this.columns = columns;
-        }
-        
-        @Override
-        public int getRowCount() {
-            return data.length;
-        }
-
-        @Override
-        public int getColumnCount() {
-            return columns.length;
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            return data[rowIndex][columnIndex];
-        }
-        
-        public void setNewData(Object[][] newData) {
-            this.data = newData;
-            fireTableDataChanged();
-        }
-        
-        public void setColumnNames(String[] newColumns) {
-            this.columns = columns;
-            fireTableStructureChanged();
-        }
-        
-        public Object[] getRowData(int index) {
-            return data[index];
-        }
-        
     }
 }
