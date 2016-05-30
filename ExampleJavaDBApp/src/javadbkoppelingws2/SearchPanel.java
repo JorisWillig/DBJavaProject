@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.AbstractTableModel;
 
 /**
  *
@@ -42,8 +43,8 @@ public class SearchPanel extends Tab{
     ArrayList<JTextField> textFields = new ArrayList<>();
     
     JScrollPane rightPanel;
-    String[][] dataValues;
-    String columnNames[];
+    String[][] dataValues = {};
+    String[] columnNames = {};
     JTable table;
     
     private enum ButtonAction {
@@ -55,11 +56,7 @@ public class SearchPanel extends Tab{
     public SearchPanel(int width, int height) {
         super(width, height);
         fillArrays();
-        fillLeft();
-        
-        
-        
-        
+        fillLeft();        
     }
     
     private void fillArrays() {
@@ -112,16 +109,20 @@ public class SearchPanel extends Tab{
                 String em = emailBox.getText();
                 String traj = trajectoryBox.getText();
                 
-                
                 String query = "SELECT Student.student_id, voornaam, "
                         + "tussenvoegsel, achternaam, email, naam "
-                        + "FROM Student, Traject, Student_Email, "
-                        + "Student_Traject WHERE voornaam LIKE '%"+fN+"%' AND "
-                        + "tussenvoegsel LIKE '%"+iF+"%' AND achternaam LIKE '%"+sN+"%' "
-                        + "AND email LIKE '%"+em+"%' AND naam LIKE '%"+traj+"%' AND "
-                        + "Student.student_id = Student_Traject.student_id AND "
-                        + "Student_Traject.traject_id = Traject.traject_id AND "
-                        + "Student.student_id = Student_Email.student_id";
+                        + "FROM Student "
+                        + "LEFT JOIN Student_Email "
+                        + "ON Student.student_id = Student_Email.student_id "
+                        + "LEFT JOIN Student_Traject "
+                        + "ON Student.student_id = Student_Traject.student_id "
+                        + "LEFT JOIN Traject "
+                        + "ON Student_Traject.traject_id = Traject.traject_id "
+                        + "WHERE voornaam LIKE '%"+fN+"%' "
+                        + "AND tussenvoegsel LIKE '%"+iF+"%' "
+                        + "AND achternaam LIKE '%"+sN+"%' "
+                        + "AND COALESCE(email, ' ') LIKE '%"+em+"%' "
+                        + "AND COALESCE(naam, ' ') LIKE '%"+traj+"%'; ";
                 ResultSet res = doQuery(query);
                 
                 columnNames = new String[6];
@@ -136,7 +137,6 @@ public class SearchPanel extends Tab{
                 try {
                     if(res.last()) {
                         rowCount = res.getRow();
-                        System.out.println("row count: " + rowCount);
                         res.beforeFirst();
                     }
                     dataValues = new String[rowCount][6];
@@ -150,16 +150,21 @@ public class SearchPanel extends Tab{
                         dataValues[counter][5] = res.getString("naam");
                         counter++;
                     }
+                    if(table == null || rightPanel == null) {
+                        table = new JTable(new MyTableModel(dataValues, columnNames));
                     
-                    table = new JTable(dataValues, columnNames);
-                    
-                    table.setShowVerticalLines(false);
-                    table.setRowSelectionAllowed(true);
-                    table.setColumnSelectionAllowed(false);
-                    rightPanel = new JScrollPane(table);
-                    rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*5);
-                    rightPanel.setLocation(WIDTH/2-X_MARGIN, Y_MARGIN);
-                    add(rightPanel);
+                        table.setShowVerticalLines(false);
+                        table.setRowSelectionAllowed(true);
+                        table.setColumnSelectionAllowed(false);
+                        
+                        rightPanel = new JScrollPane(table);
+                        rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*6 - COMPONENT_HEIGHT);
+                        rightPanel.setLocation(WIDTH/2-X_MARGIN, Y_MARGIN);
+                        add(rightPanel);
+                    }
+                    MyTableModel model = (MyTableModel)table.getModel();
+                    model.setColumnNames(columnNames);
+                    model.setNewData(dataValues);
                     repaint();
                 } catch(SQLException e2) {
                     //TODO
@@ -180,5 +185,46 @@ public class SearchPanel extends Tab{
             }
             return res;
         }
+    }
+    
+    public class MyTableModel extends AbstractTableModel {
+
+        Object[][] data;
+        String[] columns;
+        
+        public MyTableModel(Object[][] data, String[] columns) {
+            this.data = data;
+            this.columns = columns;
+        }
+        
+        @Override
+        public int getRowCount() {
+            return data.length;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columns.length;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return data[rowIndex][columnIndex];
+        }
+        
+        public void setNewData(Object[][] newData) {
+            this.data = newData;
+            fireTableDataChanged();
+        }
+        
+        public void setColumnNames(String[] newColumns) {
+            this.columns = columns;
+            fireTableStructureChanged();
+        }
+        
+        public Object[] getRowData(int index) {
+            return data[index];
+        }
+        
     }
 }
