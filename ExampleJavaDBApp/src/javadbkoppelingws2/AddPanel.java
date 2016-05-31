@@ -181,7 +181,7 @@ public class AddPanel extends Tab {
                         System.out.println(getRows("HHS_Student"));
                         try {
                             statement = DataSourceV2.getConnection().createStatement();
-                            statement.executeUpdate("INSERT INTO HHS_Student (student_id, opleiding_id)" + "VALUES(" + getStudentID() + ", " + opleidingText + ")");
+                            statement.executeUpdate("INSERT INTO HHS_Student (student_id, opleiding_id)" + "VALUES(" + getLastStudentID() + ", " + opleidingText + ")");
                         } catch (SQLException ex) {
                             Logger.getLogger(AddPanel.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -207,7 +207,7 @@ public class AddPanel extends Tab {
         JFrame studentFrame = new JFrame();
         studentFrame.setVisible(true);
         studentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        studentFrame.setSize(700, 500);
+        studentFrame.setSize(700, 650);
 
         JPanel studentPanel = new JPanel();
         studentPanel.setLayout(null);
@@ -244,6 +244,7 @@ public class AddPanel extends Tab {
 
         ArrayList<JTextField> textFieldArray = new ArrayList<JTextField>();
         ArrayList<JTextField> textForStudentArray = new ArrayList<JTextField>();
+        ArrayList<JTextField> textForExStudentArray = new ArrayList<JTextField>();
         ArrayList<JLabel> labelArray = new ArrayList<JLabel>();
 
         //Add all textfields to an array
@@ -282,6 +283,13 @@ public class AddPanel extends Tab {
         textForStudentArray.add(emailField);
         textForStudentArray.add(telvastField);
         textForStudentArray.add(telmobField);
+        
+        //Add all querytextfields for Exstudent to an array
+        textForExStudentArray.add(huisnummerField);
+        textForExStudentArray.add(straatField);
+        textForExStudentArray.add(woonplaatsField);
+        textForExStudentArray.add(landField);
+        textForExStudentArray.add(schoolField);
                 
         int xmarg = 180;
         int ymarg = 15;
@@ -354,9 +362,7 @@ public class AddPanel extends Tab {
                         int oldHHSRowCount = getRows("Exchange_Student");
                         try {
                             statement = DataSourceV2.getConnection().createStatement();
-                            statement.executeUpdate("INSERT INTO Exchange_Student (student_id, huisnummer, straat, woonplaats, land, school_id) " + "Values(" + getStudentID() + 
-                                    ", " + huisnummerField.getText() + ", '" + straatField.getText() + "', '" + ", '" + woonplaatsField.getText() + "', '" + ", '" + landField.getText() + 
-                                    "', " + schoolID + ")" );
+                            statement.executeUpdate("INSERT INTO Exchange_Student (student_id, huisnummer, straat, woonplaats, land, school_id) " + createOtherValuesQuery(textForExStudentArray, getLastStudentID()));
                         } catch (SQLException ex) {
                             Logger.getLogger(AddPanel.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -385,6 +391,23 @@ public class AddPanel extends Tab {
                 sb.append("VALUES ( '" + i.getText().replaceAll("\\s+", "") + "') ");
             } else if (i == TFA.get(0)) {
                 sb.append("VALUES ( '" + i.getText().replaceAll("\\s+", "") + "', ");
+            } else if (i == TFA.get(TFA.size() - 1)) {
+                sb.append("'" + i.getText().replaceAll("\\s+", "") + "')");
+            } else {
+                sb.append("'" + i.getText().replaceAll("\\s+", "") + "', ");
+            }
+        }
+        return sb.toString();
+    }
+    
+    //Creates query with values based on textfield but with studentID
+    public String createOtherValuesQuery(ArrayList<JTextField> TFA, int studentID) {
+        StringBuilder sb = new StringBuilder();
+        for (JTextField i : TFA) {
+            if (TFA.size() == 1) {
+                sb.append("VALUES ('" + studentID + "', '" + i.getText().replaceAll("\\s+", "") + "') ");
+            } else if (i == TFA.get(0)) {
+                sb.append("VALUES ('" + studentID + "', '" + i.getText().replaceAll("\\s+", "") + "', ");
             } else if (i == TFA.get(TFA.size() - 1)) {
                 sb.append("'" + i.getText().replaceAll("\\s+", "") + "')");
             } else {
@@ -455,7 +478,7 @@ public class AddPanel extends Tab {
         return false;
     }
 
-    public int getStudentID() {
+    public int getLastStudentID() {
         int studentID = 0;
         try {
             Statement statement = DataSourceV2.getConnection().createStatement();
