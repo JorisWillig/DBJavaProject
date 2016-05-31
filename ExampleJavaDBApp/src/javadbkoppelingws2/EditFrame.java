@@ -5,6 +5,7 @@
  */
 package javadbkoppelingws2;
 
+import java.util.Map;
 import javax.swing.JFrame;
 
 /**
@@ -14,9 +15,11 @@ import javax.swing.JFrame;
 public class EditFrame extends JFrame{
     
     boolean isExchange;
+    Map fields;
     
-    public EditFrame(boolean isExchange) {
+    public EditFrame(boolean isExchange, Map fields) {
         this.isExchange = isExchange;
+        this.fields = fields;
     }
     
     
