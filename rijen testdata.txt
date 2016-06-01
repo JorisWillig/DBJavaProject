@@ -4,3 +4,8 @@ Student: 800
 School: 30
 opleiding: 150
 HHS_Student: 250
+
+eerste 200 trajecten binnenlands
+laatste 450 trajecten buitenlands
+
+eerste 300 student_traject: exchange_binnenlands

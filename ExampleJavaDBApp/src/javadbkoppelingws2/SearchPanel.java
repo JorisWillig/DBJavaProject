@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -35,26 +36,38 @@ public class SearchPanel extends Tab{
     JLabel surNameLabel = new JLabel("Achternaam:");
     JLabel emailLabel = new JLabel("Emailadres:");
     JLabel trajectoryLabel = new JLabel("Traject:");
+    JLabel fillerLabel = new JLabel("");
+    JLabel cityLabel = new JLabel("Stad:");
+    JLabel countryLabel = new JLabel("Land:");
     
     JTextField firstNameBox = new JTextField();
     JTextField infixBox = new JTextField();
     JTextField surNameBox = new JTextField();
     JTextField emailBox = new JTextField();
     JTextField trajectoryBox = new JTextField();
-    JButton searchButton = new JButton("Zoek");
+    JButton studentSearchButton = new JButton("Zoek in studenten");
+    
+    JTextField cityBox = new JTextField();
+    JTextField countryBox = new JTextField();
+    JButton locationSearchButton = new JButton("Zoek op locatie");
     
     JButton editButton = new JButton("Edit");
     
+    ButtonAction currentAction;
+    
     ArrayList<JLabel> labels = new ArrayList<>();
-    ArrayList<JTextField> textFields = new ArrayList<>();
+    ArrayList<JComponent> textFields = new ArrayList<>();
     
     JScrollPane rightPanel;
     String[][] dataValues = {};
     String[] columnNames = {};
-    JTable table;
+    JTable table = new JTable();
+    
+    MyTableModel studentModel;
+    MyTableModel locationModel;
     
     private enum ButtonAction {
-        Zoek, Edit
+        ZoekStudenten, ZoekLocatie, Edit
     }
     
     JTextField nameSearch;
@@ -64,6 +77,21 @@ public class SearchPanel extends Tab{
         fillArrays();
         fillLeft();
 
+        table.setShowVerticalLines(false);
+        table.setRowSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
+        table.getTableHeader().setReorderingAllowed(false);
+
+        rightPanel = new JScrollPane(table);
+        rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*6 - COMPONENT_HEIGHT);
+        rightPanel.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
+        add(rightPanel);
+
+        editButton.setSize(WIDTH/2-X_MARGIN*2, COMPONENT_HEIGHT);
+        editButton.setLocation(WIDTH/2+X_MARGIN, rightPanel.getY() + rightPanel.getHeight() + Y_MARGIN);
+        editButton.addActionListener(new ButtonListener(ButtonAction.Edit));
+        add(editButton);
+        editButton.setEnabled(false);
     }
     
     private void fillArrays() {
@@ -72,12 +100,19 @@ public class SearchPanel extends Tab{
         labels.add(surNameLabel);
         labels.add(emailLabel);
         labels.add(trajectoryLabel);
+        labels.add(fillerLabel);
+        labels.add(cityLabel);
+        labels.add(countryLabel);
         
         textFields.add(firstNameBox);
         textFields.add(infixBox);
         textFields.add(surNameBox);
         textFields.add(emailBox);
         textFields.add(trajectoryBox);
+        textFields.add(studentSearchButton);
+        textFields.add(cityBox);
+        textFields.add(countryBox);
+        textFields.add(locationSearchButton);
     }
     
     private void fillLeft() {
@@ -94,10 +129,8 @@ public class SearchPanel extends Tab{
             add(textFields.get(i));
         }
         
-        searchButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        searchButton.setLocation(textFields.get(textFields.size()-1).getX(), textFields.get(textFields.size()-1).getY()+COMPONENT_HEIGHT+Y_MARGIN);
-        searchButton.addActionListener(new ButtonListener(ButtonAction.Zoek));
-        add(searchButton);
+        studentSearchButton.addActionListener(new ButtonListener(ButtonAction.ZoekStudenten));
+        locationSearchButton.addActionListener(new ButtonListener(ButtonAction.ZoekLocatie));
     }
     
     public class ButtonListener implements ActionListener {
@@ -110,7 +143,7 @@ public class SearchPanel extends Tab{
         }
         
         public void actionPerformed(ActionEvent e) {
-            if(action == ButtonAction.Zoek) {
+            if(action == ButtonAction.ZoekStudenten) {
                 String fN = firstNameBox.getText();
                 String iF = infixBox.getText();
                 String sN = surNameBox.getText();
@@ -156,29 +189,16 @@ public class SearchPanel extends Tab{
                         dataValues[counter][5] = res.getString("naam");
                         counter++;
                     }
-                    if(table == null || rightPanel == null) {
-                        table = new JTable(new MyTableModel(dataValues, columnNames));
                     
-                        model  = (MyTableModel)table.getModel();
-                        
-                        table.setShowVerticalLines(false);
-                        table.setRowSelectionAllowed(true);
-                        table.setColumnSelectionAllowed(false);
-                        table.getTableHeader().setReorderingAllowed(false);
-                        
-                        rightPanel = new JScrollPane(table);
-                        rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*6 - COMPONENT_HEIGHT);
-                        rightPanel.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
-                        add(rightPanel);
-                        
-                        editButton.setSize(WIDTH/2-X_MARGIN*2, COMPONENT_HEIGHT);
-                        editButton.setLocation(WIDTH/2+X_MARGIN, rightPanel.getY() + rightPanel.getHeight() + Y_MARGIN);
-                        editButton.addActionListener(new ButtonListener(ButtonAction.Edit));
-                        add(editButton);
+                    if(studentModel == null) {
+                        studentModel = new MyTableModel(dataValues, columnNames);
                     }
                     
-                    model.setColumnNames(columnNames);
-                    model.setNewData(dataValues);
+                    editButton.setEnabled(true);
+                    table.setModel(studentModel);
+                    
+                    studentModel.setColumnNames(columnNames);
+                    studentModel.setNewData(dataValues);
                     repaint();
                 } catch(SQLException e2) {
                     //TODO
@@ -224,6 +244,67 @@ public class SearchPanel extends Tab{
                     }
                 } else {
                     JOptionPane.showMessageDialog(rightPanel, "Selecteer eerst een rij die u wilt bewerken", "error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else if(action == ButtonAction.ZoekLocatie) {
+                String stad = cityBox.getText();
+                String land = countryBox.getText();
+                
+                String query = "SELECT stad, land, voornaam, tussenvoegsel, achternaam, email, telnr_mob " +
+                            "FROM School " +
+                            "LEFT JOIN Opleiding " +
+                            "ON Opleiding.school_id = School.school_id " +
+                            "LEFT JOIN Traject " +
+                            "ON Traject.opleiding_id = Opleiding.opleiding_id " +
+                            "LEFT JOIN Student_Traject " +
+                            "ON Traject.traject_id = Student_Traject.traject_id " +
+                            "LEFT JOIN Student " +
+                            "ON Student_Traject.student_id = Student.student_id " +
+                            "WHERE Student.student_id IN (SELECT student_id FROM HHS_Student)" +
+                            "AND stad LIKE '%"+stad+"%'" +
+                            "AND land LIKE '%"+land+"%'";
+                ResultSet res = doQuery(query);
+                
+                columnNames = new String[7];
+                columnNames[0] = "Stad";
+                columnNames[1] = "Land";
+                columnNames[2] = "Voornaam";
+                columnNames[3] = "Tussenvoegsel";
+                columnNames[4] = "Achternaam";
+                columnNames[5] = "Emailadres";
+                columnNames[6] = "Mobiel nummer";
+                
+                int rowCount = 0;
+                try {
+                    if(res.last()) {
+                        rowCount = res.getRow();
+                        res.beforeFirst();
+                    }
+                    dataValues = new String[rowCount][columnNames.length];
+                    int counter = 0;
+                    while(res.next()) {
+                        dataValues[counter][0] = res.getString("stad");
+                        dataValues[counter][1] = res.getString("land");
+                        dataValues[counter][2] = res.getString("voornaam");
+                        dataValues[counter][3] = res.getString("tussenvoegsel");
+                        dataValues[counter][4] = res.getString("achternaam");
+                        dataValues[counter][5] = res.getString("email");
+                        dataValues[counter][6] = res.getString("telnr_mob");
+                        counter++;
+                    }
+
+                    editButton.setEnabled(false);
+                    
+                    if(locationModel == null) {
+                        locationModel = new MyTableModel(dataValues, columnNames);
+                    }
+                    
+                    table.setModel(locationModel);
+                    
+                    locationModel.setColumnNames(columnNames);
+                    locationModel.setNewData(dataValues);
+                    repaint();
+                } catch(SQLException e2) {
+                    //TODO
                 }
             }
         }

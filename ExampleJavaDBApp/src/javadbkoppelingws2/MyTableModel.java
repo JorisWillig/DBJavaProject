@@ -34,6 +34,7 @@ public class MyTableModel extends AbstractTableModel {
         
         public void setNewData(Object[][] newData) {
             this.data = newData;
+            fireTableStructureChanged();
             fireTableDataChanged();
         }
         
