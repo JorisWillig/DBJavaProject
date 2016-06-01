@@ -164,6 +164,7 @@ public class SearchPanel extends Tab{
                         table.setShowVerticalLines(false);
                         table.setRowSelectionAllowed(true);
                         table.setColumnSelectionAllowed(false);
+                        table.getTableHeader().setReorderingAllowed(false);
                         
                         rightPanel = new JScrollPane(table);
                         rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*6 - COMPONENT_HEIGHT);
