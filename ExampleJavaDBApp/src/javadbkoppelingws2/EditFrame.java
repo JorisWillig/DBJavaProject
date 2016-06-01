@@ -20,9 +20,13 @@ public class EditFrame extends JFrame{
     boolean isExchange;
     Map<String, String> fields;
     
-    public EditFrame(boolean isExchange, Map<String, String> fields) {
+    public EditFrame(SearchPanel.ButtonListener parent, boolean isExchange, Map<String, String> fields) {
         this.isExchange = isExchange;
         this.fields = fields;
+        
+        setSize(700, 700);
+        setVisible(true);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
         ArrayList<JTextField> fieldList = new ArrayList<>();
         
@@ -32,7 +36,7 @@ public class EditFrame extends JFrame{
         int yMargin = 20;
         
         int counter = 0;
-        for(Map.Entry<String, String> pair: fields.entrySet()) {
+        for(Map.Entry<String, String> pair: this.fields.entrySet()) {
             JLabel currentLabel = new JLabel(pair.getKey());
             JTextField currentField = new JTextField(pair.getValue());
             currentLabel.setSize(compWidth, compHeight);

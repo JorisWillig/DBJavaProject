@@ -8,9 +8,12 @@ package javadbkoppelingws2;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -117,16 +120,14 @@ public class SearchPanel extends Tab{
                 String query = "SELECT Student.student_id, voornaam, "
                         + "tussenvoegsel, achternaam, email, naam "
                         + "FROM Student "
-                        + "LEFT JOIN Student_Email "
-                        + "ON Student.student_id = Student_Email.student_id "
                         + "LEFT JOIN Student_Traject "
                         + "ON Student.student_id = Student_Traject.student_id "
                         + "LEFT JOIN Traject "
                         + "ON Student_Traject.traject_id = Traject.traject_id "
                         + "WHERE voornaam LIKE '%"+fN+"%' "
-                        + "AND tussenvoegsel LIKE '%"+iF+"%' "
+                        + "AND COALESCE(tussenvoegsel, ' ') LIKE '%"+iF+"%' "
                         + "AND achternaam LIKE '%"+sN+"%' "
-                        + "AND COALESCE(email, ' ') LIKE '%"+em+"%' "
+                        + "AND email LIKE '%"+em+"%' "
                         + "AND COALESCE(naam, ' ') LIKE '%"+traj+"%'; ";
                 ResultSet res = doQuery(query);
                 
@@ -144,7 +145,7 @@ public class SearchPanel extends Tab{
                         rowCount = res.getRow();
                         res.beforeFirst();
                     }
-                    dataValues = new String[rowCount][6];
+                    dataValues = new String[rowCount][columnNames.length];
                     int counter = 0;
                     while(res.next()) {
                         dataValues[counter][0] = res.getString("student_id");
@@ -192,14 +193,33 @@ public class SearchPanel extends Tab{
                         while(res.next()) {
                             if(rowData[0].toString().equals(res.getString("student_id"))) {
                                 isExchange = true;
+                                System.out.println("is exchange");
                             }
                         }
-                        if(isExchange)
-                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam");
-                        else
-                            System.out.println("is geen exchange student");
-                        EditFrame editFrame = new EditFrame(isExchange);
-                        EditFrame.setSize
+                        Map<String, String> fields;
+                        if(isExchange) {
+                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast as TelVast, telnr_mob as TelMobiel, huisnummer, straat, woonplaats, land, schoolnaam " +
+                                          "FROM Student INNER JOIN Exchange_Student ON " +
+                                          "Student.student_id = Exchange_Student.student_id " +
+                                          "LEFT JOIN School ON" +
+                                          "Exchange_Student.school_id = School.school_id " +
+                                          "WHERE Student.student_id = '" + rowData[0] + "'");
+                        } else {
+                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast as TelVast, telnr_mob as TelMobiel, opleiding_naam " +
+                                          "FROM Student " +
+                                          "INNER JOIN HHS_Student ON " +
+                                          "Student.student_id = HHS_Student.student_id " +
+                                          "LEFT JOIN Opleiding ON " +
+                                          "HHS_Student.opleiding_id = Opleiding.opleiding_id " +
+                                          "WHERE Student.student_id = '" + rowData[0] + "'");
+                        }
+                        res.first();
+                        System.out.println(rowData[0]);
+                        System.out.println("id: " + rowData[0] + "voornaam: " + res.getString("voornaam"));
+                        fields = fillMap(res);
+                        
+                        EditFrame editFrame = new EditFrame(this, isExchange, fields);
+                        
                     } catch(SQLException editEx) {
                         
                     }
@@ -207,6 +227,23 @@ public class SearchPanel extends Tab{
                     JOptionPane.showMessageDialog(rightPanel, "Selecteer eerst een rij die u wilt bewerken", "error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        }
+        
+        private TreeMap<String, String> fillMap(ResultSet res) {
+            TreeMap<String, String> map = new TreeMap<String, String>();
+            try {
+                ResultSetMetaData metaData = res.getMetaData();
+                int colCount = metaData.getColumnCount();
+                System.out.println(colCount);
+                for(int i = 0; i < colCount; i++) {
+                    String colName = metaData.getColumnName(i+1);
+                    map.put(colName, res.getString(colName));
+                }
+            } catch(SQLException mapEx) {
+                //TODO
+            }
+            System.out.println(map);
+            return map;
         }
         
         public ResultSet doQuery(String query) {

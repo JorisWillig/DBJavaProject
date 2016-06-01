@@ -43,7 +43,6 @@ public class MyTableModel extends AbstractTableModel {
         }
         
         public Object[] getRowData(int index) {
-            System.out.println(data[index][1].toString());
             return data[index];
         }
         
