@@ -14,72 +14,129 @@ import static javadbkoppelingws2.Tab.conn;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
 /**
  *
  * @author Bas
  */
 public class SignupPanel extends Tab {
-    
+
+    MyTableModel model;
+
+    String[][] dataValues = {};
+    String[] columnNames = {};
+    JTable table;
+    JScrollPane rightPanel;
+
     JButton signupButton = new JButton("Student inschrijven");
-    
-    JTextField firstNameField = new JTextField();
-    JTextField infixField = new JTextField();
-    JTextField surNameField = new JTextField();  
+
     JTextField trajectField = new JTextField();
-    
-    JLabel firstNameLabel = new JLabel("Voornaam:");
-    JLabel infixLabel = new JLabel("Tussenvoegsel(s):");
-    JLabel surNameLabel = new JLabel("Achternaam:");
+    JTextField student_idField = new JTextField();
+
     JLabel trajectLabel = new JLabel("Traject:");
-    
+    JLabel studentLabel = new JLabel("Student ID");
+
     public SignupPanel(int width, int height) {
         super(width, height);
-        
+
         signupButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        signupButton.setLocation(X_MARGIN + 150, Y_MARGIN + 200);
-        
-        firstNameField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        firstNameField.setLocation(X_MARGIN + 150, Y_MARGIN);
-        
-        infixField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        infixField.setLocation(X_MARGIN + 150, Y_MARGIN + 50);
-        
-        surNameField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        surNameField.setLocation(X_MARGIN + 150, Y_MARGIN + 100);
-        
+        signupButton.setLocation(X_MARGIN + 150, Y_MARGIN + 250);
+
         trajectField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectField.setLocation(X_MARGIN + 150, Y_MARGIN + 150);
-        
-        firstNameLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        firstNameLabel.setLocation(X_MARGIN, Y_MARGIN);
-        
-        infixLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        infixLabel.setLocation(X_MARGIN, Y_MARGIN + 50);
-        
-        surNameLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        surNameLabel.setLocation(X_MARGIN, Y_MARGIN + 100);
-        
+
+        student_idField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        student_idField.setLocation(X_MARGIN + 150, Y_MARGIN + 200);
+
         trajectLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectLabel.setLocation(X_MARGIN, Y_MARGIN + 150);
-        
+
+        studentLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        studentLabel.setLocation(X_MARGIN, Y_MARGIN + 200);
+
         signupButton.addActionListener(new SignupPanel.ButtonListener(SignupPanel.ButtonAction.Inschrijven));
-        
-        add(firstNameField);
-        add(infixField);
-        add(surNameField);
+
         add(signupButton);
         add(trajectField);
-        add(firstNameLabel);
-        add(infixLabel);
-        add(surNameLabel);
         add(trajectLabel);
+        add(studentLabel);
+        add(student_idField);
+
+        addStudentTable();
     }
-    
+
+    public ResultSet doQuery(String query) {
+        Statement stat;
+        ResultSet res = null;
+        try {
+            stat = conn.createStatement();
+
+            res = stat.executeQuery(query);
+            int counter = 0;
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        return res;
+    }
+
+    private void addStudentTable() {
+
+        String query = "SELECT Student.student_id, Student.voornaam, Student.tussenvoegsel, Student.achternaam"
+                + " FROM Student;";
+                ResultSet res = doQuery(query);
+
+        columnNames = new String[4];
+        columnNames[0] = "student_id";
+        columnNames[1] = "voornaam";
+        columnNames[2] = "tussenvoegsel";
+        columnNames[3] = "achternaam";
+
+        int rowCount = 0;
+        try {
+            if (res.last()) {
+                rowCount = res.getRow();
+                res.beforeFirst();
+            }
+            dataValues = new String[rowCount][columnNames.length];
+            int counter = 0;
+            while (res.next()) {
+                dataValues[counter][0] = res.getString("Student.student_id");
+                dataValues[counter][1] = res.getString("Student.voornaam");
+                dataValues[counter][2] = res.getString("Student.tussenvoegsel");
+                dataValues[counter][3] = res.getString("Student.achternaam");
+
+                counter++;
+            }
+
+            if (table == null || rightPanel == null) {
+                table = new JTable(new MyTableModel(dataValues, columnNames));
+
+                model = (MyTableModel) table.getModel();
+
+                table.setShowVerticalLines(false);
+                table.setRowSelectionAllowed(true);
+                table.setColumnSelectionAllowed(false);
+
+                rightPanel = new JScrollPane(table);
+                rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 6 - COMPONENT_HEIGHT);
+                rightPanel.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN);
+                add(rightPanel);
+
+            }
+            model.setColumnNames(columnNames);
+            model.setNewData(dataValues);
+            repaint();
+        } catch (SQLException e2) {
+            //TODO
+        }
+    }
+
     private enum ButtonAction {
         Inschrijven
     }
-    
-    
+
     public class ButtonListener implements ActionListener {
 
         ButtonAction action;
@@ -88,43 +145,23 @@ public class SignupPanel extends Tab {
         public ButtonListener(ButtonAction action) {
             this.action = action;
         }
-      
-    public void actionPerformed(ActionEvent e) {
+
+        public void actionPerformed(ActionEvent e) {
             if (action == SignupPanel.ButtonAction.Inschrijven) {
-                String firstName = firstNameField.getText();
-                String infix = infixField.getText();
-                String surName = surNameField.getText();
                 String traject = trajectField.getText();
-                
-                String query = "SELECT Student.student_id, voornaam, "
-                + "tussenvoegsel, achternaam, email, naam "
-                + "FROM Student "
-                + "LEFT JOIN Student_Traject "
-                + "ON Student.student_id = Student_Traject.student_id "
-                + "LEFT JOIN Traject "
-                + "ON Student_Traject.traject_id = Traject.traject_id "
-                + "WHERE voornaam LIKE '%"+firstName+"%' "
-                + "AND tussenvoegsel LIKE '%"+infix+"%' "
-                + "AND achternaam LIKE '%"+surName+"%' "
-                + "AND COALESCE(naam, ' ') LIKE '%"+traject+"%'; ";
-                
-                
+
+                String query = "SELECT Student.student_id, Traject.traject_id, "
+                        + "FROM Student "
+                        + "LEFT JOIN Student_Traject "
+                        + "ON Student.student_id = Student_Traject.student_id "
+                        + "LEFT JOIN Traject "
+                        + "ON Student_Traject.traject_id = Traject.traject_id "
+                        + "AND COALESCE(naam, ' ') LIKE '%" + traject + "%'; ";
+
             }
-    
+
         }
-    
-            public ResultSet doQuery(String query) {
-            Statement stat;
-            ResultSet res = null;
-            try {
-                stat = conn.createStatement();
-                
-                res = stat.executeQuery(query);
-                int counter = 0;
-            } catch(SQLException e1) {
-                e1.printStackTrace();
-            }
-            return res;
-        }
+
     }
+
 }
