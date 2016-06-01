@@ -198,10 +198,10 @@ public class SearchPanel extends Tab{
                         }
                         Map<String, String> fields;
                         if(isExchange) {
-                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast as TelVast, telnr_mob as TelMobiel, huisnummer, straat, woonplaats, land, schoolnaam " +
+                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast, telnr_mob, huisnummer, straat, woonplaats, Exchange_Student.land, schoolnaam " +
                                           "FROM Student INNER JOIN Exchange_Student ON " +
                                           "Student.student_id = Exchange_Student.student_id " +
-                                          "LEFT JOIN School ON" +
+                                          "LEFT JOIN School ON " +
                                           "Exchange_Student.school_id = School.school_id " +
                                           "WHERE Student.student_id = '" + rowData[0] + "'");
                         } else {
@@ -214,8 +214,6 @@ public class SearchPanel extends Tab{
                                           "WHERE Student.student_id = '" + rowData[0] + "'");
                         }
                         res.first();
-                        System.out.println(rowData[0]);
-                        System.out.println("id: " + rowData[0] + "voornaam: " + res.getString("voornaam"));
                         fields = fillMap(res);
                         
                         EditFrame editFrame = new EditFrame(this, isExchange, fields);
@@ -234,15 +232,13 @@ public class SearchPanel extends Tab{
             try {
                 ResultSetMetaData metaData = res.getMetaData();
                 int colCount = metaData.getColumnCount();
-                System.out.println(colCount);
                 for(int i = 0; i < colCount; i++) {
                     String colName = metaData.getColumnName(i+1);
-                    map.put(colName, res.getString(colName));
+                    map.put(colName, res.getString(i+1));
                 }
             } catch(SQLException mapEx) {
                 //TODO
             }
-            System.out.println(map);
             return map;
         }
         

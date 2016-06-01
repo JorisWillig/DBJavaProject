@@ -37,6 +37,11 @@ public class MyTableModel extends AbstractTableModel {
             fireTableDataChanged();
         }
         
+        @Override
+        public String getColumnName(int column) {
+            return columns[column];
+        }
+        
         public void setColumnNames(String[] newColumns) {
             this.columns = columns;
             fireTableStructureChanged();

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
@@ -20,6 +21,8 @@ public class EditFrame extends JFrame{
     boolean isExchange;
     Map<String, String> fields;
     
+    JPanel holdingPanel = new JPanel();
+    
     public EditFrame(SearchPanel.ButtonListener parent, boolean isExchange, Map<String, String> fields) {
         this.isExchange = isExchange;
         this.fields = fields;
@@ -27,6 +30,8 @@ public class EditFrame extends JFrame{
         setSize(700, 700);
         setVisible(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        holdingPanel.setLayout(null);
         
         ArrayList<JTextField> fieldList = new ArrayList<>();
         
@@ -40,13 +45,15 @@ public class EditFrame extends JFrame{
             JLabel currentLabel = new JLabel(pair.getKey());
             JTextField currentField = new JTextField(pair.getValue());
             currentLabel.setSize(compWidth, compHeight);
-            currentField.setSize(compWidth, compHeight);
+            currentField.setSize(compWidth*4, compHeight);
             currentLabel.setLocation(xMargin, yMargin*(counter+1) + (compHeight*counter));
             currentField.setLocation(xMargin*2+compWidth, yMargin*(counter+1) + (compHeight*counter));
-            add(currentLabel);
-            add(currentField);
+            holdingPanel.add(currentLabel);
+            holdingPanel.add(currentField);
             counter++;
         }
+        
+        add(holdingPanel);
     }
     
         
