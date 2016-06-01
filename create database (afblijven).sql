@@ -19,6 +19,9 @@ CREATE TABLE `Student`
 `tussenvoegsel` varchar(15),
 `achternaam` varchar(45) NOT NULL,
 `geslacht` enum('Male', 'Female') NOT NULL,
+`email` char(30) NOT NULL,
+`telnr_vast` char(20),
+`telnr_mob` char(20),
 PRIMARY KEY (`student_id`)) ENGINE=InnoDB;
 
 CREATE TABLE `Bedrijf`
@@ -77,7 +80,8 @@ ON DELETE RESTRICT) ENGINE=InnoDB;
 CREATE TABLE `Exchange_Student`
 (
 `student_id` int(15) NOT NULL,
-`adres` varchar(45) NOT NULL,
+`huisnummer` int(10) NOT NULL,
+`straat` varchar(45) NOT NULL,
 `woonplaats` varchar(45) NOT NULL,
 `land` varchar(45) NOT NULL,
 `school_id` int(15) NOT NULL, 
@@ -137,24 +141,6 @@ FOREIGN KEY (`student_id`) REFERENCES Student(`student_id`)
 ON UPDATE CASCADE
 ON DELETE RESTRICT,
 FOREIGN KEY (`traject_id`) REFERENCES Traject(`traject_id`) 
-ON UPDATE CASCADE
-ON DELETE RESTRICT) ENGINE=InnoDB;
-
-CREATE TABLE `Student_Telnr`
-(
-`student_id` int(15) NOT NULL,
-`telnr` char(20) NOT NULL,
-PRIMARY KEY (`student_id`, `telnr`),
-FOREIGN KEY (`student_id`) REFERENCES Student(`student_id`)
-ON UPDATE CASCADE
-ON DELETE RESTRICT) ENGINE=InnoDB;
-
-CREATE TABLE `Student_Email`
-(
-`student_id` int(15) NOT NULL,
-`email` char(30) NOT NULL,
-PRIMARY KEY (`student_id`, `email`),
-FOREIGN KEY (`student_id`) REFERENCES Student(`student_id`)
 ON UPDATE CASCADE
 ON DELETE RESTRICT) ENGINE=InnoDB;
 

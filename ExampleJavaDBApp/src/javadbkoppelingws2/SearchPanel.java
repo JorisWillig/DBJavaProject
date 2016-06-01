@@ -198,6 +198,8 @@ public class SearchPanel extends Tab{
                             res = doQuery("SELECT voornaam, tussenvoegsel, achternaam");
                         else
                             System.out.println("is geen exchange student");
+                        EditFrame editFrame = new EditFrame(isExchange);
+                        EditFrame.setSize
                     } catch(SQLException editEx) {
                         
                     }
