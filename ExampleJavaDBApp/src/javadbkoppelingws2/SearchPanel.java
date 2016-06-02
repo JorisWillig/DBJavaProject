@@ -61,7 +61,7 @@ public class SearchPanel extends Tab{
     JScrollPane rightPanel;
     String[][] dataValues = {};
     String[] columnNames = {};
-    JTable table = new JTable();
+    JTable table;
     
     MyTableModel studentModel;
     MyTableModel locationModel;
@@ -70,28 +70,12 @@ public class SearchPanel extends Tab{
         ZoekStudenten, ZoekLocatie, Edit
     }
     
-    JTextField nameSearch;
-    
     public SearchPanel(int width, int height) {
         super(width, height);
         fillArrays();
         fillLeft();
-
-        table.setShowVerticalLines(false);
-        table.setRowSelectionAllowed(true);
-        table.setColumnSelectionAllowed(false);
-        table.getTableHeader().setReorderingAllowed(false);
-
-        rightPanel = new JScrollPane(table);
-        rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*6 - COMPONENT_HEIGHT);
-        rightPanel.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
-        add(rightPanel);
-
-        editButton.setSize(WIDTH/2-X_MARGIN*2, COMPONENT_HEIGHT);
-        editButton.setLocation(WIDTH/2+X_MARGIN, rightPanel.getY() + rightPanel.getHeight() + Y_MARGIN);
-        editButton.addActionListener(new ButtonListener(ButtonAction.Edit));
-        add(editButton);
-        editButton.setEnabled(false);
+        fillRight();
+        
     }
     
     private void fillArrays() {
@@ -131,6 +115,24 @@ public class SearchPanel extends Tab{
         
         studentSearchButton.addActionListener(new ButtonListener(ButtonAction.ZoekStudenten));
         locationSearchButton.addActionListener(new ButtonListener(ButtonAction.ZoekLocatie));
+    }
+    private void fillRight() {
+        table = new JTable();
+        table.setShowVerticalLines(false);
+        table.setRowSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
+        table.getTableHeader().setReorderingAllowed(false);
+
+        rightPanel = new JScrollPane(table);
+        rightPanel.setSize(WIDTH/2-X_MARGIN*2, HEIGHT - Y_MARGIN*6 - COMPONENT_HEIGHT);
+        rightPanel.setLocation(WIDTH/2+X_MARGIN, Y_MARGIN);
+        add(rightPanel);
+
+        editButton.setSize(WIDTH/2-X_MARGIN*2, COMPONENT_HEIGHT);
+        editButton.setLocation(WIDTH/2+X_MARGIN, rightPanel.getY() + rightPanel.getHeight() + Y_MARGIN);
+        editButton.addActionListener(new ButtonListener(ButtonAction.Edit));
+        add(editButton);
+        editButton.setEnabled(false);
     }
     
     public class ButtonListener implements ActionListener {
@@ -217,27 +219,23 @@ public class SearchPanel extends Tab{
                                 System.out.println("is exchange");
                             }
                         }
-                        Map<String, String> fields;
+                        Map<String, JTextField> fields;
                         if(isExchange) {
-                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast, telnr_mob, huisnummer, straat, woonplaats, Exchange_Student.land, schoolnaam " +
+                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast, telnr_mob, huisnummer, straat, woonplaats, land " +
                                           "FROM Student INNER JOIN Exchange_Student ON " +
                                           "Student.student_id = Exchange_Student.student_id " +
-                                          "LEFT JOIN School ON " +
-                                          "Exchange_Student.school_id = School.school_id " +
                                           "WHERE Student.student_id = '" + rowData[0] + "'");
                         } else {
-                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast as TelVast, telnr_mob as TelMobiel, opleiding_naam " +
+                            res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast, telnr_mob " +
                                           "FROM Student " +
                                           "INNER JOIN HHS_Student ON " +
                                           "Student.student_id = HHS_Student.student_id " +
-                                          "LEFT JOIN Opleiding ON " +
-                                          "HHS_Student.opleiding_id = Opleiding.opleiding_id " +
                                           "WHERE Student.student_id = '" + rowData[0] + "'");
                         }
                         res.first();
                         fields = fillMap(res);
                         
-                        EditFrame editFrame = new EditFrame(this, isExchange, fields);
+                        EditFrame editFrame = new EditFrame(this, isExchange, fields, Integer.parseInt((String) rowData[0]));
                         
                     } catch(SQLException editEx) {
                         
@@ -309,14 +307,14 @@ public class SearchPanel extends Tab{
             }
         }
         
-        private TreeMap<String, String> fillMap(ResultSet res) {
-            TreeMap<String, String> map = new TreeMap<String, String>();
+        private TreeMap<String, JTextField> fillMap(ResultSet res) {
+            TreeMap<String, JTextField> map = new TreeMap<String, JTextField>();
             try {
                 ResultSetMetaData metaData = res.getMetaData();
                 int colCount = metaData.getColumnCount();
                 for(int i = 0; i < colCount; i++) {
                     String colName = metaData.getColumnName(i+1);
-                    map.put(colName, res.getString(i+1));
+                    map.put(colName, new JTextField(res.getString(i+1)));
                 }
             } catch(SQLException mapEx) {
                 //TODO
@@ -336,6 +334,18 @@ public class SearchPanel extends Tab{
                 e1.printStackTrace();
             }
             return res;
+        }
+        
+        public void doUpdate(String query) {
+            Statement stat;
+            try {
+                stat = conn.createStatement();
+                
+                stat.executeUpdate(query);
+                int counter = 0;
+            } catch(SQLException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 }
