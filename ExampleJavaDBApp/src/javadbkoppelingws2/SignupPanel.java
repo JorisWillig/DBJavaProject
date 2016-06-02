@@ -10,6 +10,10 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static javadbkoppelingws2.Tab.conn;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -65,6 +69,7 @@ public class SignupPanel extends Tab {
         add(student_idField);
 
         addStudentTable();
+
     }
 
     public ResultSet doQuery(String query) {
@@ -149,17 +154,39 @@ public class SignupPanel extends Tab {
             this.action = action;
         }
 
+        public String getDate() {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 1);
+            SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            
+            String formatted = format1.format(cal.getTime());
+
+            return formatted;
+        }
+
         public void actionPerformed(ActionEvent e) {
             if (action == SignupPanel.ButtonAction.Inschrijven) {
-                String traject = trajectField.getText();
+                Statement statement = null;
 
-                String query = "SELECT Student.student_id, Traject.traject_id, "
-                        + "FROM Student "
-                        + "LEFT JOIN Student_Traject "
-                        + "ON Student.student_id = Student_Traject.student_id "
-                        + "LEFT JOIN Traject "
-                        + "ON Student_Traject.traject_id = Traject.traject_id "
-                        + "AND COALESCE(naam, ' ') LIKE '%" + traject + "%'; ";
+                String traject = trajectField.getText();
+                String student_id = student_idField.getText();
+                String date = getDate();
+                System.out.println(date);
+                String query = "insert into Student_Traject "
+                        + "VALUES("
+                        + student_id
+                        + ", "
+                        + traject
+                        + ", 0, "
+                        + getDate()
+                        + ");";
+
+                try {
+                    statement = DataSourceV2.getConnection().createStatement();
+                    statement.executeUpdate(query);
+                } catch (SQLException ex) {
+                    Logger.getLogger(SignupPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
             }
 
