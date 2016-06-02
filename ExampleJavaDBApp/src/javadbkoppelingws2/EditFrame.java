@@ -7,8 +7,10 @@ package javadbkoppelingws2;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+import static javadbkoppelingws2.Tab.conn;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,11 +33,15 @@ public class EditFrame extends JFrame{
     
     JButton button;
     
+    JFrame frame;
+    
     public EditFrame(SearchPanel.ButtonListener parent, boolean isExchange, Map<String, JTextField> fields, int id) {
         this.parent = parent;
         this.isExchange = isExchange;
         this.fields = fields;
         this.id = id;
+        
+        frame = this;
         
         setSize(700, 700);
         holdingPanel.setSize(700, 700);
@@ -73,32 +79,42 @@ public class EditFrame extends JFrame{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(isExchange) {
-                String query = 
-                          "UPDATE Student "
+            if(isExchange) {               
+                String query = "UPDATE Student "
                         + "SET "
-                        + "voornaam='"+fields.get("voornaam").getText() + "',"
-                        + "tussenvoegsel='"+fields.get("tussenvoegsel").getText() + "',"
-                        + "achternaam='"+fields.get("achternaam").getText() + "',"
-                        + "geslacht='"+fields.get("geslacht").getText() + "',"
-                        + "email='"+fields.get("email").getText() + "',"
-                        + "telnr_vast='"+fields.get("telnr_vast").getText() + "',"
-                        + "telnr_mob='"+fields.get("telnr_mob").getText() + "' "
-                        + "WHERE student_id = "+id+"; "
-                        + "UPDATE Exchange_Student "
-                        + "SET "
-                        + "huisnummer='"+fields.get("huisnummer").getText() + "', "
-                        + "straat='"+fields.get("straat").getText() + "', "
-                        + "woonplaats='"+fields.get("woonplaats").getText() + "', "
-                        + "land='"+fields.get("land").getText() + "' "
-                        + "WHERE student_id = "+id+";";
-                System.out.println(query);
+                        + "`voornaam`='"+fields.get("voornaam").getText()+"',"
+                        + "`tussenvoegsel`='"+fields.get("tussenvoegsel").getText()+"',"
+                        + "`achternaam`='"+fields.get("achternaam").getText()+"', "
+                        + "`geslacht`='"+fields.get("geslacht").getText()+"', "
+                        + "`email`='"+fields.get("email").getText()+"', "
+                        + "`telnr_vast`='"+fields.get("telnr_vast").getText()+"', "
+                        + "`telnr_mob`='"+fields.get("telnr_mob").getText()+"' "
+                        + "WHERE `student_id` = "+id+";";
                 parent.doUpdate(query);
-                JOptionPane.showMessageDialog(holdingPanel, "Student aangepast", "", JOptionPane.INFORMATION_MESSAGE);
+                query  ="UPDATE Exchange_Student "
+                        + "SET "
+                        + "`huisnummer`='"+fields.get("huisnummer").getText()+"', "
+                        + "`straat`='"+fields.get("straat").getText()+"', "
+                        + "`woonplaats`='"+fields.get("woonplaats").getText()+"', "
+                        + "`land`='"+fields.get("land").getText()+"' "
+                        + "WHERE `student_id` = "+id+";";
+                parent.doUpdate(query);
+                
+            } else {
+                 String query = "UPDATE Student "
+                        + "SET "
+                        + "`voornaam`='"+fields.get("voornaam").getText()+"',"
+                        + "`tussenvoegsel`='"+fields.get("tussenvoegsel").getText()+"',"
+                        + "`achternaam`='"+fields.get("achternaam").getText()+"', "
+                        + "`geslacht`='"+fields.get("geslacht").getText()+"', "
+                        + "`email`='"+fields.get("email").getText()+"', "
+                        + "`telnr_vast`='"+fields.get("telnr_vast").getText()+"', "
+                        + "`telnr_mob`='"+fields.get("telnr_mob").getText()+"' "
+                        + "WHERE `student_id` = "+id+";";
+                parent.doUpdate(query);
             }
+            JOptionPane.showMessageDialog(holdingPanel, "Student aangepast", "", JOptionPane.INFORMATION_MESSAGE);
+            frame.dispose();
         }
-        
-    }
-    
-        
+    }     
 }
