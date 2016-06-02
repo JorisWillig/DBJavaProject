@@ -10,6 +10,10 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static javadbkoppelingws2.Tab.conn;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -36,25 +40,25 @@ public class SignupPanel extends Tab {
     JTextField student_idField = new JTextField();
 
     JLabel trajectLabel = new JLabel("Traject:");
-    JLabel studentLabel = new JLabel("Student ID");
+    JLabel studentLabel = new JLabel("Student ID:");
 
     public SignupPanel(int width, int height) {
         super(width, height);
 
         signupButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        signupButton.setLocation(X_MARGIN + 150, Y_MARGIN + 250);
+        signupButton.setLocation(X_MARGIN + 150, Y_MARGIN + 200);
 
         trajectField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        trajectField.setLocation(X_MARGIN + 150, Y_MARGIN + 150);
+        trajectField.setLocation(X_MARGIN + 150, Y_MARGIN);
 
         student_idField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        student_idField.setLocation(X_MARGIN + 150, Y_MARGIN + 200);
+        student_idField.setLocation(X_MARGIN + 150, Y_MARGIN + 100);
 
         trajectLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        trajectLabel.setLocation(X_MARGIN, Y_MARGIN + 150);
+        trajectLabel.setLocation(X_MARGIN, Y_MARGIN);
 
         studentLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        studentLabel.setLocation(X_MARGIN, Y_MARGIN + 200);
+        studentLabel.setLocation(X_MARGIN, Y_MARGIN + 100);
 
         signupButton.addActionListener(new SignupPanel.ButtonListener(SignupPanel.ButtonAction.Inschrijven));
 
@@ -65,6 +69,7 @@ public class SignupPanel extends Tab {
         add(student_idField);
 
         addStudentTable();
+
     }
 
     public ResultSet doQuery(String query) {
@@ -83,15 +88,17 @@ public class SignupPanel extends Tab {
 
     private void addStudentTable() {
 
-        String query = "SELECT Student.student_id, Student.voornaam, Student.tussenvoegsel, Student.achternaam"
-                + " FROM Student;";
-                ResultSet res = doQuery(query);
+        String query = "SELECT Student.achternaam, Student.voornaam, Student.tussenvoegsel, Student.student_id "
+                + "FROM Student "
+                + "ORDER BY Student.achternaam;";
+
+        ResultSet res = doQuery(query);
 
         columnNames = new String[4];
-        columnNames[0] = "student_id";
+        columnNames[0] = "achternaam";
         columnNames[1] = "voornaam";
         columnNames[2] = "tussenvoegsel";
-        columnNames[3] = "achternaam";
+        columnNames[3] = "student_id";
 
         int rowCount = 0;
         try {
@@ -102,10 +109,10 @@ public class SignupPanel extends Tab {
             dataValues = new String[rowCount][columnNames.length];
             int counter = 0;
             while (res.next()) {
-                dataValues[counter][0] = res.getString("Student.student_id");
+                dataValues[counter][0] = res.getString("Student.achternaam");
                 dataValues[counter][1] = res.getString("Student.voornaam");
                 dataValues[counter][2] = res.getString("Student.tussenvoegsel");
-                dataValues[counter][3] = res.getString("Student.achternaam");
+                dataValues[counter][3] = res.getString("Student.student_id");
 
                 counter++;
             }
@@ -134,6 +141,7 @@ public class SignupPanel extends Tab {
     }
 
     private enum ButtonAction {
+
         Inschrijven
     }
 
@@ -146,17 +154,39 @@ public class SignupPanel extends Tab {
             this.action = action;
         }
 
+        public String getDate() {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 1);
+            SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            
+            String formatted = format1.format(cal.getTime());
+
+            return formatted;
+        }
+
         public void actionPerformed(ActionEvent e) {
             if (action == SignupPanel.ButtonAction.Inschrijven) {
-                String traject = trajectField.getText();
+                Statement statement = null;
 
-                String query = "SELECT Student.student_id, Traject.traject_id, "
-                        + "FROM Student "
-                        + "LEFT JOIN Student_Traject "
-                        + "ON Student.student_id = Student_Traject.student_id "
-                        + "LEFT JOIN Traject "
-                        + "ON Student_Traject.traject_id = Traject.traject_id "
-                        + "AND COALESCE(naam, ' ') LIKE '%" + traject + "%'; ";
+                String traject = trajectField.getText();
+                String student_id = student_idField.getText();
+                String date = getDate();
+                System.out.println(date);
+                String query = "insert into Student_Traject "
+                        + "VALUES("
+                        + student_id
+                        + ", "
+                        + traject
+                        + ", 0, "
+                        + getDate()
+                        + ");";
+
+                try {
+                    statement = DataSourceV2.getConnection().createStatement();
+                    statement.executeUpdate(query);
+                } catch (SQLException ex) {
+                    Logger.getLogger(SignupPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
             }
 

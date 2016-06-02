@@ -21,33 +21,65 @@ import javax.swing.JTable;
  */
 public class OverviewPanel extends Tab {
 
-    JButton countryButton = new JButton("Overzicht op land");
+    JButton countryExchangeButton = new JButton("Overzicht op land (exchange)");
     JButton trajectButton = new JButton("Overzicht op traject");
     JButton schoolButton = new JButton("Overzicht op school");
+    JButton countryHHSButton = new JButton("Overzicht op land (hhs)");
+
+    JTable table;
+    MyTableModel model;
+    String[][] dataValues = {};
+    String[] columnNames = {};
+    JScrollPane rightPanel;
+
+    MyTableModel landExchangeModel;
+    MyTableModel landHHSModel;
+    MyTableModel trajectModel;
+    MyTableModel schoolModel;
 
     private enum ButtonAction {
-        Overzict_op_land, Overzicht_op_traject, Overzicht_op_school
+        Overzicht_op_land_exchangeStudent, Overzicht_op_traject, Overzicht_op_school, Overzicht_op_land_HHS_Student
     }
 
     //todo gemiddelde aantal punten per traject van het maximale 
     public OverviewPanel(int width, int height) {
         super(width, height);
         fillLeft();
+        fillRight();
+    }
+
+    private void fillRight() {
+        table = new JTable();
+        table.setShowVerticalLines(false);
+        table.setRowSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
+        table.getTableHeader().setReorderingAllowed(false);
+
+        rightPanel = new JScrollPane(table);
+        rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 6 - COMPONENT_HEIGHT);
+        rightPanel.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN);
+        add(rightPanel);
+
     }
 
     public void fillLeft() {
-        countryButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        countryExchangeButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        countryHHSButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         schoolButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        countryButton.setLocation(X_MARGIN, Y_MARGIN);
-        trajectButton.setLocation(X_MARGIN, Y_MARGIN + 50);
-        schoolButton.setLocation(X_MARGIN, Y_MARGIN + 100);
 
-        countryButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzict_op_land));
+        countryExchangeButton.setLocation(X_MARGIN, Y_MARGIN);
+        countryHHSButton.setLocation(X_MARGIN, Y_MARGIN + 50);
+        trajectButton.setLocation(X_MARGIN, Y_MARGIN + 100);
+        schoolButton.setLocation(X_MARGIN, Y_MARGIN + 150);
+
+        countryExchangeButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_exchangeStudent));
+        countryHHSButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_HHS_Student));
         trajectButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_traject));
         schoolButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_school));
 
-        add(countryButton);
+        add(countryExchangeButton);
+        add(countryHHSButton);
         add(trajectButton);
         add(schoolButton);
     }
@@ -55,19 +87,95 @@ public class OverviewPanel extends Tab {
     public class ButtonListener implements ActionListener {
 
         ButtonAction action;
-        MyTableModel model;
-        JTable table;
-        String[][] dataValues = {};
-        String[] columnNames = {};
-        JScrollPane rightPanel;
 
         public ButtonListener(ButtonAction action) {
             this.action = action;
         }
 
         public void actionPerformed(ActionEvent e) {
-            if (action == ButtonAction.Overzict_op_land) {
- 
+            if (action == ButtonAction.Overzicht_op_land_exchangeStudent) {
+                String query = "SELECT School.land "
+                        + ", count(Exchange_Student.student_id) as Aantal_studenten "
+                        + "FROM School "
+                        + "INNER JOIN Exchange_Student ON School.school_id = Exchange_Student.school_id "
+                        + "GROUP BY School.land ORDER BY Aantal_studenten DESC;";
+                ResultSet res = doQuery(query);
+                columnNames = new String[2];
+                columnNames[0] = "Land";
+                columnNames[1] = "Aantal studenten";
+
+                int rowCount = 0;
+                try {
+                    if (res.last()) {
+                        rowCount = res.getRow();
+                        res.beforeFirst();
+                    }
+                    dataValues = new String[rowCount][columnNames.length];
+                    int counter = 0;
+                    while (res.next()) {
+                        dataValues[counter][0] = res.getString("School.land");
+                        dataValues[counter][1] = res.getString("Aantal_studenten");
+                        counter++;
+                    }
+
+                    if (landExchangeModel == null) {
+                        landExchangeModel = new MyTableModel(dataValues, columnNames);
+                    }
+
+                    table.setModel(landExchangeModel);
+
+                    landExchangeModel.setColumnNames(columnNames);
+                    landExchangeModel.setNewData(dataValues);
+                    repaint();
+                } catch (SQLException e2) {
+                    //TODO
+                }
+            }
+
+            if (action == ButtonAction.Overzicht_op_land_HHS_Student) {
+                String query = "SELECT  School.land, count(HHS_Student.student_id) as Aantal_studenten "
+                        + "FROM HHS_Student "
+                        + "INNER JOIN Student_Traject "
+                        + "ON HHS_Student.student_id = Student_Traject.student_id "
+                        + "LEFT JOIN Traject "
+                        + "ON Student_Traject.traject_id = Traject.traject_id "
+                        + "LEFT JOIN Opleiding "
+                        + "ON Traject.opleiding_id = Opleiding.opleiding_id "
+                        + "LEFT JOIN School "
+                        + "ON Opleiding.school_id = School.school_id "
+                        + "GROUP BY School.land "
+                        + "ORDER BY Aantal_studenten DESC;";
+                ResultSet res = doQuery(query);
+                columnNames = new String[2];
+                columnNames[0] = "Land";
+                columnNames[1] = "Aantal studenten";
+
+                int rowCount = 0;
+                try {
+                    if (res.last()) {
+                        rowCount = res.getRow();
+                        res.beforeFirst();
+                    }
+                    dataValues = new String[rowCount][columnNames.length];
+                    int counter = 0;
+                    while (res.next()) {
+                        dataValues[counter][0] = res.getString("School.land");
+                        dataValues[counter][1] = res.getString("Aantal_studenten");
+                        counter++;
+                    }
+
+                    if (landHHSModel == null) {
+                        landHHSModel = new MyTableModel(dataValues, columnNames);
+                    }
+
+                    table.setModel(landHHSModel);
+
+                    landHHSModel.setColumnNames(columnNames);
+                    landHHSModel.setNewData(dataValues);
+                    repaint();
+                } catch (SQLException e2) {
+                    //TODO
+                }
             }
             if (action == ButtonAction.Overzicht_op_traject) {
                 String query = " SELECT Student_Traject.traject_id, Traject.naam"
@@ -85,46 +193,27 @@ public class OverviewPanel extends Tab {
 
                 int rowCount = 0;
                 try {
-                    System.out.println("After try");
                     if (res.last()) {
                         rowCount = res.getRow();
-                        System.out.println(rowCount);
                         res.beforeFirst();
                     }
-                    System.out.println("After row count set");
                     dataValues = new String[rowCount][columnNames.length];
                     int counter = 0;
-                    System.out.println("Before while");
                     while (res.next()) {
-                        System.out.println("begin while");
                         dataValues[counter][0] = res.getString("Student_Traject.traject_id");
                         dataValues[counter][1] = res.getString("Traject.naam");
                         dataValues[counter][2] = res.getString("Aantal_studenten");
                         counter++;
-                        System.out.println("while " + counter);
-                    }
-                    System.out.println("After while");
-                    System.out.println(table);
-                    System.out.println(rightPanel);
-                    if (table == null || rightPanel == null) {
-                        System.out.println("fsgs");
-                        table = new JTable(new MyTableModel(dataValues, columnNames));
-
-                        model = (MyTableModel) table.getModel();
-
-                        table.setShowVerticalLines(false);
-                        table.setRowSelectionAllowed(true);
-                        table.setColumnSelectionAllowed(false);
-
-                        rightPanel = new JScrollPane(table);
-                        rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 6 - COMPONENT_HEIGHT);
-                        rightPanel.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN);
-                        add(rightPanel);
-
                     }
 
-                    model.setColumnNames(columnNames);
-                    model.setNewData(dataValues);
+                    if (trajectModel == null) {
+                        trajectModel = new MyTableModel(dataValues, columnNames);
+                    }
+
+                    table.setModel(trajectModel);
+
+                    trajectModel.setColumnNames(columnNames);
+                    trajectModel.setNewData(dataValues);
                     repaint();
                 } catch (SQLException e2) {
                     //TODO
@@ -148,7 +237,6 @@ public class OverviewPanel extends Tab {
                 try {
                     if (res.last()) {
                         rowCount = res.getRow();
-                        System.out.println(rowCount);
                         res.beforeFirst();
                     }
                     dataValues = new String[rowCount][columnNames.length];
@@ -159,31 +247,19 @@ public class OverviewPanel extends Tab {
                         dataValues[counter][2] = res.getString("Aantal_studenten");
                         counter++;
                     }
-                    if (table == null || rightPanel == null) {
-                        table = new JTable(new MyTableModel(dataValues, columnNames));
-
-                        model = (MyTableModel) table.getModel();
-
-                        table.setShowVerticalLines(false);
-                        table.setRowSelectionAllowed(true);
-                        table.setColumnSelectionAllowed(false);
-
-                        rightPanel = new JScrollPane(table);
-                        rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 6 - COMPONENT_HEIGHT);
-                        rightPanel.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN);
-                        add(rightPanel);
-
+                    if (schoolModel == null) {
+                        schoolModel = new MyTableModel(dataValues, columnNames);
                     }
 
-                    model.setColumnNames(columnNames);
-                    model.setNewData(dataValues);
+                    table.setModel(schoolModel);
+
+                    schoolModel.setColumnNames(columnNames);
+                    schoolModel.setNewData(dataValues);
                     repaint();
                 } catch (SQLException e2) {
                     //TODO
                 }
-
             }
-
         }
 
         public ResultSet doQuery(String query) {
