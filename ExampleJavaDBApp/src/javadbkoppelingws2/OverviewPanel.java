@@ -85,29 +85,20 @@ public class OverviewPanel extends Tab {
 
                 int rowCount = 0;
                 try {
-                    System.out.println("After try");
                     if (res.last()) {
                         rowCount = res.getRow();
-                        System.out.println(rowCount);
                         res.beforeFirst();
                     }
-                    System.out.println("After row count set");
                     dataValues = new String[rowCount][columnNames.length];
                     int counter = 0;
-                    System.out.println("Before while");
                     while (res.next()) {
-                        System.out.println("begin while");
                         dataValues[counter][0] = res.getString("Student_Traject.traject_id");
                         dataValues[counter][1] = res.getString("Traject.naam");
                         dataValues[counter][2] = res.getString("Aantal_studenten");
                         counter++;
-                        System.out.println("while " + counter);
                     }
-                    System.out.println("After while");
-                    System.out.println(table);
-                    System.out.println(rightPanel);
+
                     if (table == null || rightPanel == null) {
-                        System.out.println("fsgs");
                         table = new JTable(new MyTableModel(dataValues, columnNames));
 
                         model = (MyTableModel) table.getModel();
@@ -148,7 +139,6 @@ public class OverviewPanel extends Tab {
                 try {
                     if (res.last()) {
                         rowCount = res.getRow();
-                        System.out.println(rowCount);
                         res.beforeFirst();
                     }
                     dataValues = new String[rowCount][columnNames.length];
