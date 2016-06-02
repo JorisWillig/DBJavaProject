@@ -157,7 +157,7 @@ public class SignupPanel extends Tab {
         public String getDate() {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, 1);
-            SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
             
             String formatted = format1.format(cal.getTime());
 
