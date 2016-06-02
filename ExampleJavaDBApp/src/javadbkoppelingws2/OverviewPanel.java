@@ -69,9 +69,9 @@ public class OverviewPanel extends Tab {
         schoolButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
 
         countryExchangeButton.setLocation(X_MARGIN, Y_MARGIN);
-        countryHHSButton.setLocation(X_MARGIN, Y_MARGIN + 50);
-        trajectButton.setLocation(X_MARGIN, Y_MARGIN + 100);
-        schoolButton.setLocation(X_MARGIN, Y_MARGIN + 150);
+        countryHHSButton.setLocation(X_MARGIN, Y_MARGIN*2 +COMPONENT_HEIGHT);
+        trajectButton.setLocation(X_MARGIN, Y_MARGIN*3 +COMPONENT_HEIGHT * 2);
+        schoolButton.setLocation(X_MARGIN, Y_MARGIN*4 + COMPONENT_HEIGHT * 3);
 
         countryExchangeButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_exchangeStudent));
         countryHHSButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_HHS_Student));
