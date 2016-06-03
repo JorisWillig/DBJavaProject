@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javadbkoppelingws2.Tab.conn;
@@ -208,13 +209,18 @@ public class SignupPanel extends Tab {
         }
 
         public String getDate() {
-            Calendar cal = Calendar.getInstance();
+            Date date = new Date();
+            String modifiedDate= new SimpleDateFormat("yyyy/MM/dd").format(date);
+            
+            /*    Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, 1);
             SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
 
             String formatted = format1.format(cal.getTime());
 
             return formatted;
+                */
+            return modifiedDate;
         }
 
         public void errorBox(String infoMessage) {
@@ -232,20 +238,22 @@ public class SignupPanel extends Tab {
                 String traject = trajectField.getText();
                 String student_id = student_idField.getText();
                 String date = getDate();
+                System.out.println(date);
                 String query = "insert into Student_Traject "
                         + "VALUES("
                         + student_id
                         + ", "
                         + traject
                         + ", 0, "
-                        + getDate()
+                        + date
                         + ");";
 
                 try {
                     statement = DataSourceV2.getConnection().createStatement();
                     statement.executeUpdate(query);
-                    infoBox("Student: " + student_id + " is toegevoegd aan Traject: " + traject);
+                    infoBox("Student: " + student_id + " is toegevoegd aan traject: " + traject);
                 } catch (SQLException ex) {
+                    errorBox("mysql error");
                     Logger.getLogger(SignupPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
