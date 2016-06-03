@@ -35,37 +35,72 @@ public class SignupPanel extends Tab {
     String[][] dataValues2 = {};
     String[] columnNames = {};
     String[] columnNames2 = {};
-    JTable table;
-    JTable table2;
+    JTable studentTable;
+    JTable trajectTable;
     JScrollPane rightPanel;
     JScrollPane rightPanel2;
 
     JButton signupButton = new JButton("Student inschrijven");
-
+    JButton trajectZoekenButton = new JButton("Zoeken");
+    JButton studentZoekenButton = new JButton("Zoeken");
+    
     JTextField trajectField = new JTextField();
     JTextField student_idField = new JTextField();
+    JTextField studentVoornaamField= new JTextField();
+    JTextField studentAchternaamField = new JTextField();
+    JTextField trajectNaamField = new JTextField();
 
     JLabel trajectLabel = new JLabel("Traject:");
     JLabel studentLabel = new JLabel("Student ID:");
+    JLabel studentVoornaamLabel = new JLabel("Voornaam:");
+    JLabel studentAchternaamLabel = new JLabel("Achternaam:");
+    JLabel trajectNaamLabel = new JLabel("Traject naam:");
 
     public SignupPanel(int width, int height) {
         super(width, height);
 
+        addStudentTable();
+        addTrajectTable();
+        
         signupButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        signupButton.setLocation(X_MARGIN + 150, Y_MARGIN + 100);
+        signupButton.setLocation(X_MARGIN + 100, Y_MARGIN + 100);
 
         trajectField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        trajectField.setLocation(X_MARGIN + 150, Y_MARGIN);
+        trajectField.setLocation(X_MARGIN + 100, Y_MARGIN);
 
         student_idField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        student_idField.setLocation(X_MARGIN + 150, Y_MARGIN + 50);
+        student_idField.setLocation(X_MARGIN + 100, Y_MARGIN + 50);
 
         trajectLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectLabel.setLocation(X_MARGIN, Y_MARGIN);
 
         studentLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         studentLabel.setLocation(X_MARGIN, Y_MARGIN + 50);
-
+        
+        studentVoornaamLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        studentVoornaamLabel.setLocation(X_MARGIN + 500, Y_MARGIN);
+        
+        studentAchternaamLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        studentAchternaamLabel.setLocation(X_MARGIN + 500, Y_MARGIN + 50);
+        
+        studentZoekenButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        studentZoekenButton.setLocation(X_MARGIN + 600, Y_MARGIN + 100);
+        
+        studentVoornaamField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        studentVoornaamField.setLocation(X_MARGIN + 600, Y_MARGIN);
+        
+        studentAchternaamField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        studentAchternaamField.setLocation(X_MARGIN + 600, Y_MARGIN + 50);
+        
+        trajectNaamLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        trajectNaamLabel.setLocation(X_MARGIN + 500, Y_MARGIN + 525);
+        
+        trajectNaamField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        trajectNaamField.setLocation(X_MARGIN + 600, Y_MARGIN + 525);
+        
+        trajectZoekenButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        trajectZoekenButton.setLocation(X_MARGIN + 600, Y_MARGIN + 575);
+        
         signupButton.addActionListener(new SignupPanel.ButtonListener(SignupPanel.ButtonAction.Inschrijven));
 
         add(signupButton);
@@ -73,9 +108,14 @@ public class SignupPanel extends Tab {
         add(trajectLabel);
         add(studentLabel);
         add(student_idField);
-
-        addStudentTable();
-        addTrajectTable();
+        add(studentVoornaamLabel);
+        add(studentAchternaamLabel);
+        add(studentAchternaamField);
+        add(studentVoornaamField);
+        add(trajectNaamField);
+        add(trajectNaamLabel);
+        add(trajectZoekenButton);
+        add(studentZoekenButton);      
     }
 
     public ResultSet doQuery(String query) {
@@ -117,16 +157,16 @@ public class SignupPanel extends Tab {
                 counter++;
             }
 
-            if (table2 == null || rightPanel2 == null) {
-                table2 = new JTable(new MyTableModel(dataValues2, columnNames2));
+            if (trajectTable == null || rightPanel2 == null) {
+                trajectTable = new JTable(new MyTableModel(dataValues2, columnNames2));
 
-                model2 = (MyTableModel) table2.getModel();
+                model2 = (MyTableModel) trajectTable.getModel();
 
-                table2.setShowVerticalLines(false);
-                table2.setRowSelectionAllowed(true);
-                table2.setColumnSelectionAllowed(false);
+                trajectTable.setShowVerticalLines(false);
+                trajectTable.setRowSelectionAllowed(true);
+                trajectTable.setColumnSelectionAllowed(false);
 
-                rightPanel2 = new JScrollPane(table2);
+                rightPanel2 = new JScrollPane(trajectTable);
                 rightPanel2.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 24 - COMPONENT_HEIGHT);
                 rightPanel2.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN + 525);
                 add(rightPanel2);
@@ -171,16 +211,16 @@ public class SignupPanel extends Tab {
                 counter++;
             }
 
-            if (table == null || rightPanel == null) {
-                table = new JTable(new MyTableModel(dataValues, columnNames));
+            if (studentTable == null || rightPanel == null) {
+                studentTable = new JTable(new MyTableModel(dataValues, columnNames));
 
-                model = (MyTableModel) table.getModel();
+                model = (MyTableModel) studentTable.getModel();
 
-                table.setShowVerticalLines(false);
-                table.setRowSelectionAllowed(true);
-                table.setColumnSelectionAllowed(false);
+                studentTable.setShowVerticalLines(false);
+                studentTable.setRowSelectionAllowed(true);
+                studentTable.setColumnSelectionAllowed(false);
 
-                rightPanel = new JScrollPane(table);
+                rightPanel = new JScrollPane(studentTable);
                 rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 20 - COMPONENT_HEIGHT);
                 rightPanel.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN);
                 add(rightPanel);
@@ -195,8 +235,7 @@ public class SignupPanel extends Tab {
     }
 
     private enum ButtonAction {
-
-        Inschrijven
+        Inschrijven, zoekTraject, zoekStudent
     }
 
     public class ButtonListener implements ActionListener {
@@ -259,6 +298,10 @@ public class SignupPanel extends Tab {
 
             } else {
                 errorBox("Velden zijn niet ingevuld...");
+            }
+            
+            if (action == ButtonAction.zoekStudent){
+                
             }
         }
 
