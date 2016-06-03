@@ -18,6 +18,7 @@ import static javadbkoppelingws2.Tab.conn;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -28,11 +29,15 @@ import javax.swing.JTable;
 public class SignupPanel extends Tab {
 
     MyTableModel model;
-
+    MyTableModel model2;
     String[][] dataValues = {};
+    String[][] dataValues2 = {};
     String[] columnNames = {};
+    String[] columnNames2 = {};
     JTable table;
+    JTable table2;
     JScrollPane rightPanel;
+    JScrollPane rightPanel2;
 
     JButton signupButton = new JButton("Student inschrijven");
 
@@ -46,19 +51,19 @@ public class SignupPanel extends Tab {
         super(width, height);
 
         signupButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        signupButton.setLocation(X_MARGIN + 150, Y_MARGIN + 200);
+        signupButton.setLocation(X_MARGIN + 150, Y_MARGIN + 100);
 
         trajectField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectField.setLocation(X_MARGIN + 150, Y_MARGIN);
 
         student_idField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        student_idField.setLocation(X_MARGIN + 150, Y_MARGIN + 100);
+        student_idField.setLocation(X_MARGIN + 150, Y_MARGIN + 50);
 
         trajectLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectLabel.setLocation(X_MARGIN, Y_MARGIN);
 
         studentLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        studentLabel.setLocation(X_MARGIN, Y_MARGIN + 100);
+        studentLabel.setLocation(X_MARGIN, Y_MARGIN + 50);
 
         signupButton.addActionListener(new SignupPanel.ButtonListener(SignupPanel.ButtonAction.Inschrijven));
 
@@ -69,7 +74,7 @@ public class SignupPanel extends Tab {
         add(student_idField);
 
         addStudentTable();
-
+        addTrajectTable();
     }
 
     public ResultSet doQuery(String query) {
@@ -84,6 +89,54 @@ public class SignupPanel extends Tab {
             e1.printStackTrace();
         }
         return res;
+    }
+
+    private void addTrajectTable() {
+
+        String query = "SELECT Traject.traject_id, Traject.naam "
+                + "FROM Traject;";
+
+        ResultSet res = doQuery(query);
+
+        columnNames2 = new String[2];
+        columnNames2[0] = "traject_id";
+        columnNames2[1] = "naam";
+
+        int rowCount = 0;
+        try {
+            if (res.last()) {
+                rowCount = res.getRow();
+                res.beforeFirst();
+            }
+            dataValues2 = new String[rowCount][columnNames2.length];
+            int counter = 0;
+            while (res.next()) {
+                dataValues2[counter][0] = res.getString("Traject.traject_id");
+                dataValues2[counter][1] = res.getString("Traject.naam");
+                counter++;
+            }
+
+            if (table2 == null || rightPanel2 == null) {
+                table2 = new JTable(new MyTableModel(dataValues2, columnNames2));
+
+                model2 = (MyTableModel) table2.getModel();
+
+                table2.setShowVerticalLines(false);
+                table2.setRowSelectionAllowed(true);
+                table2.setColumnSelectionAllowed(false);
+
+                rightPanel2 = new JScrollPane(table2);
+                rightPanel2.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 24 - COMPONENT_HEIGHT);
+                rightPanel2.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN + 525);
+                add(rightPanel2);
+
+            }
+            model2.setColumnNames(columnNames2);
+            model2.setNewData(dataValues2);
+            repaint();
+        } catch (SQLException e2) {
+            //TODO
+        }
     }
 
     private void addStudentTable() {
@@ -127,7 +180,7 @@ public class SignupPanel extends Tab {
                 table.setColumnSelectionAllowed(false);
 
                 rightPanel = new JScrollPane(table);
-                rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 6 - COMPONENT_HEIGHT);
+                rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 20 - COMPONENT_HEIGHT);
                 rightPanel.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN);
                 add(rightPanel);
 
@@ -157,21 +210,28 @@ public class SignupPanel extends Tab {
         public String getDate() {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, 1);
-            SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-            
+            SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
+
             String formatted = format1.format(cal.getTime());
 
             return formatted;
         }
 
+        public void errorBox(String infoMessage) {
+            JOptionPane.showMessageDialog(null, infoMessage, "Error...", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        public void infoBox(String infoMessage) {
+            JOptionPane.showMessageDialog(null, infoMessage, "Succes", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         public void actionPerformed(ActionEvent e) {
-            if (action == SignupPanel.ButtonAction.Inschrijven) {
+            if ((action == SignupPanel.ButtonAction.Inschrijven) && (!trajectField.getText().equals("")) && (!student_idField.getText().equals(""))) {
                 Statement statement = null;
 
                 String traject = trajectField.getText();
                 String student_id = student_idField.getText();
                 String date = getDate();
-                System.out.println(date);
                 String query = "insert into Student_Traject "
                         + "VALUES("
                         + student_id
@@ -184,12 +244,14 @@ public class SignupPanel extends Tab {
                 try {
                     statement = DataSourceV2.getConnection().createStatement();
                     statement.executeUpdate(query);
+                    infoBox("Student: " + student_id + " is toegevoegd aan Traject: " + traject);
                 } catch (SQLException ex) {
                     Logger.getLogger(SignupPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
+            } else {
+                errorBox("Velden zijn niet ingevuld...");
             }
-
         }
 
     }
