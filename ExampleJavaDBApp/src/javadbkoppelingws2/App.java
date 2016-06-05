@@ -6,6 +6,9 @@
 package javadbkoppelingws2;
 
 import java.awt.BorderLayout;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -46,7 +49,11 @@ public class App extends JFrame {
 
         searchPanel = new SearchPanel(WIDTH, HEIGHT);
         addPanel = new AddPanel(WIDTH, HEIGHT);
-        overviewPanel = new OverviewPanel(WIDTH, HEIGHT);
+        try {
+            overviewPanel = new OverviewPanel(WIDTH, HEIGHT);
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
         signupPanel = new SignupPanel(WIDTH, HEIGHT);
 
         tabbedPane.addTab("Zoeken", searchPanel);

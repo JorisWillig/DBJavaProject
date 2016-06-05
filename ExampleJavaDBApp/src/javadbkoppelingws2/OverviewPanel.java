@@ -5,13 +5,17 @@
  */
 package javadbkoppelingws2;
 
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import static javadbkoppelingws2.Tab.conn;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -19,12 +23,15 @@ import javax.swing.JTable;
  *
  * @author Stef
  */
-public class OverviewPanel extends Tab {
+public final class OverviewPanel extends Tab {
 
     JButton countryExchangeButton = new JButton("Overzicht op land (exchange)");
     JButton trajectButton = new JButton("Overzicht op traject");
     JButton schoolButton = new JButton("Overzicht op school");
     JButton countryHHSButton = new JButton("Overzicht op land (hhs)");
+
+    ArrayList<String> opleidingen = new ArrayList<>();
+    JComboBox<String> opleidingBox;
 
     JTable table;
     MyTableModel model;
@@ -41,8 +48,37 @@ public class OverviewPanel extends Tab {
         Overzicht_op_land_exchangeStudent, Overzicht_op_traject, Overzicht_op_school, Overzicht_op_land_HHS_Student
     }
 
-    //todo gemiddelde aantal punten per traject van het maximale 
-    public OverviewPanel(int width, int height) {
+    public ResultSet doQuery(String query) {
+        Statement stat;
+        ResultSet res = null;
+        try {
+            stat = conn.createStatement();
+
+            res = stat.executeQuery(query);
+            int counter = 0;
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        return res;
+    }
+
+    private void fillComboBox() throws SQLException {
+        ArrayList<String> ls = new ArrayList<>();
+
+        String query = "SELECT Opleiding.opleiding_naam FROM Opleiding ORDER BY opleiding_naam";
+        try (ResultSet res = doQuery(query)) {
+            while (res.next()) {
+                String opleiding = res.getString("Opleiding.opleiding_naam");
+                ls.add(opleiding);
+
+            }
+            opleidingBox.setModel(new DefaultComboBoxModel(ls.toArray()));
+
+        }
+    }
+
+//todo gemiddelde aantal punten per traject van het maximale 
+    public OverviewPanel(int width, int height) throws SQLException {
         super(width, height);
         fillLeft();
         fillRight();
@@ -62,11 +98,15 @@ public class OverviewPanel extends Tab {
 
     }
 
-    public void fillLeft() {
+    public void fillLeft() throws SQLException {
         countryExchangeButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         countryHHSButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         schoolButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+
+        opleidingBox = new JComboBox();
+        opleidingBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        opleidingBox.setLocation(X_MARGIN, Y_MARGIN * 5 + COMPONENT_HEIGHT * 4);
 
         countryExchangeButton.setLocation(X_MARGIN, Y_MARGIN);
         countryHHSButton.setLocation(X_MARGIN, Y_MARGIN * 2 + COMPONENT_HEIGHT);
@@ -82,6 +122,9 @@ public class OverviewPanel extends Tab {
         add(countryHHSButton);
         add(trajectButton);
         add(schoolButton);
+        add(opleidingBox);
+        fillComboBox();
+
     }
 
     public class ButtonListener implements ActionListener {
@@ -92,6 +135,7 @@ public class OverviewPanel extends Tab {
             this.action = action;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (action == ButtonAction.Overzicht_op_land_exchangeStudent) {
                 String query = "SELECT School.land "
@@ -262,18 +306,5 @@ public class OverviewPanel extends Tab {
             }
         }
 
-        public ResultSet doQuery(String query) {
-            Statement stat;
-            ResultSet res = null;
-            try {
-                stat = conn.createStatement();
-
-                res = stat.executeQuery(query);
-                int counter = 0;
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-            return res;
-        }
     }
 }
