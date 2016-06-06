@@ -12,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.JButton;
@@ -227,7 +228,7 @@ public class SearchPanel extends Tab {
                                 System.out.println("is exchange");
                             }
                         }
-                        Map<String, JTextField> fields;
+                        LinkedHashMap<String, JTextField> fields;
                         if (isExchange) {
                             res = doQuery("SELECT voornaam, tussenvoegsel, achternaam, geslacht, email, telnr_vast, telnr_mob, huisnummer, straat, woonplaats, land "
                                     + "FROM Student INNER JOIN Exchange_Student ON "
@@ -366,8 +367,8 @@ public class SearchPanel extends Tab {
             }
         }
 
-        private TreeMap<String, JTextField> fillMap(ResultSet res) {
-            TreeMap<String, JTextField> map = new TreeMap<String, JTextField>();
+        private LinkedHashMap<String, JTextField> fillMap(ResultSet res) {
+            LinkedHashMap<String, JTextField> map = new LinkedHashMap<String, JTextField>();
             try {
                 ResultSetMetaData metaData = res.getMetaData();
                 int colCount = metaData.getColumnCount();
