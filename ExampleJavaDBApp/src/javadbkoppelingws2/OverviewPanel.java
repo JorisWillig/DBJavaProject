@@ -70,10 +70,8 @@ public final class OverviewPanel extends Tab {
             while (res.next()) {
                 String opleiding = res.getString("Opleiding.opleiding_naam");
                 ls.add(opleiding);
-
             }
             opleidingBox.setModel(new DefaultComboBoxModel(ls.toArray()));
-
         }
     }
 
@@ -95,7 +93,6 @@ public final class OverviewPanel extends Tab {
         rightPanel.setSize(WIDTH / 2 - X_MARGIN * 2, HEIGHT - Y_MARGIN * 6 - COMPONENT_HEIGHT);
         rightPanel.setLocation(WIDTH / 2 + X_MARGIN, Y_MARGIN);
         add(rightPanel);
-
     }
 
     public void fillLeft() throws SQLException {
@@ -117,6 +114,7 @@ public final class OverviewPanel extends Tab {
         countryHHSButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_HHS_Student));
         trajectButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_traject));
         schoolButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_school));
+        opleidingBox.addActionListener(new OverviewPanel.MyActionListener());
 
         add(countryExchangeButton);
         add(countryHHSButton);
@@ -124,7 +122,65 @@ public final class OverviewPanel extends Tab {
         add(schoolButton);
         add(opleidingBox);
         fillComboBox();
+    }
 
+    public class MyActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+            //opleidingBox = (JComboBox) evt.getSource();
+            String x = opleidingBox.getSelectedItem().toString();
+            String query = "SELECT Student.voornaam, Student.tussenvoegsel, Student.achternaam, Exchange_Student.land as land_van_herkomst "
+                    + "FROM Exchange_Student "
+                    + "JOIN School "
+                    + "ON Exchange_Student.school_id = School.school_id "
+                    + "JOIN Opleiding "
+                    + "ON School.school_id = Opleiding.school_id "
+                    + "JOIN Student "
+                    + "ON Exchange_Student.student_id = Student.student_id "
+                    + "WHERE Opleiding.opleiding_naam LIKE '%"
+                    + x
+                    + "%' ;";
+            //+ "ORDER BY Student.voornaam;";
+
+            ResultSet res = doQuery(query);
+
+            columnNames = new String[4];
+            columnNames[0] = "Voornaam";
+            columnNames[1] = "Tussenvoegsel";
+            columnNames[2] = "Achternaam";
+            columnNames[3] = "Land van herkomst";
+
+            int rowCount = 0;
+            try {
+                if (res.last()) {
+                    rowCount = res.getRow();
+                    res.beforeFirst();
+                }
+                dataValues = new String[rowCount][columnNames.length];
+                int counter = 0;
+                while (res.next()) {
+                    dataValues[counter][0] = res.getString("Student.voornaam");
+                    dataValues[counter][1] = res.getString("Student.tussenvoegsel");
+                    dataValues[counter][2] = res.getString("Student.achternaam");
+                    dataValues[counter][3] = res.getString("land_van_herkomst");
+
+                    counter++;
+                }
+
+                if (landExchangeModel == null) {
+                    landExchangeModel = new MyTableModel(dataValues, columnNames);
+                }
+
+                table.setModel(landExchangeModel);
+
+                landExchangeModel.setColumnNames(columnNames);
+                landExchangeModel.setNewData(dataValues);
+                repaint();
+            } catch (SQLException e2) {
+
+            }
+        }
     }
 
     public class ButtonListener implements ActionListener {
@@ -305,6 +361,5 @@ public final class OverviewPanel extends Tab {
                 }
             }
         }
-
     }
 }
