@@ -125,10 +125,35 @@ public class AddPanel extends Tab {
         }   
     }
     
+    private enum SchoolComps{
+        schoolnaam(new JTextField(), new JLabel("schoolnaam: ")),
+        stad(new JTextField(),new JLabel("Stad: ")),
+        land(new JTextField(), new JLabel("Land: "));
+        
+        private JLabel label;
+        private JTextField textField;
+        
+        SchoolComps(JTextField textField, JLabel label){
+            this.label = label;
+            this.textField = textField;
+        }
+        
+        public JTextField getTextField(){
+            return textField;
+        }
+        
+        public JLabel getLabel(){
+            return label;
+        }   
+    }
+    
     JButton addHHSStudentButton = new JButton("Voeg een HHS-student toe");
     JButton addExchangeStudentButton = new JButton("Voeg een Exchange-student toe");
     JButton addStageButton = new JButton("Voeg een Stage toe");
     JButton addStudieButton = new JButton("Voeg een Studie toe");
+    JButton addSchoolButton = new JButton("Voeg een School toe");
+    JButton addBedrijfButton = new JButton("Voeg een Bedrijf toe");
+    JButton addOpleidingButton = new JButton("Voeg een Opleiding toe");
 
     public AddPanel(int width, int height) {
         super(width, height);
@@ -141,7 +166,7 @@ public class AddPanel extends Tab {
         addHHSStudentButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         addHHSStudentButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {               
                 openHHSStudentFrame();
             }
         });
@@ -175,12 +200,45 @@ public class AddPanel extends Tab {
                 openStudieFrame();
             }
         });
+        
+        //SchoolButton
+        addSchoolButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        addSchoolButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 2));
+        addSchoolButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                openStudieFrame();
+            }
+        });
+        
+        //BedrijfButton
+        addBedrijfButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        addBedrijfButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH, addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 2));
+        addBedrijfButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                openStudieFrame();
+            }
+        });
+        
+        //OpleidingButton
+        addOpleidingButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        addOpleidingButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 3));
+        addOpleidingButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                openStudieFrame();
+            }
+        });
 
         //Add buttons to frame
         add(addHHSStudentButton);
         add(addExchangeStudentButton);
         add(addStageButton);
         add(addStudieButton);
+        add(addSchoolButton);
+        add(addBedrijfButton);
+        add(addOpleidingButton);
     }
 
     public void openHHSStudentFrame() {
@@ -308,7 +366,10 @@ public class AddPanel extends Tab {
 
     public void openExchangeStudentFrame() {
         JFrame studentFrame = new JFrame();
-        studentFrame.setVisible(true);
+        if(!studentFrame.isActive()){
+          studentFrame.setVisible(true);          
+        }
+
         studentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         studentFrame.setSize(700, 650);
 
