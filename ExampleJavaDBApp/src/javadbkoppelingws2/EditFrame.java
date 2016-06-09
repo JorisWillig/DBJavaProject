@@ -68,7 +68,7 @@ public class EditFrame extends JFrame {
             pair.getValue().setLocation(xMargin * 2 + compWidth, yMargin * (counter + 1) + (compHeight * counter));
             holdingPanel.add(currentLabel);
             holdingPanel.add(pair.getValue());
-            if(!(pair.getKey().equals("telnr_mob") || pair.getKey().equals("telnr_vast") || pair.getKey().equals("email"))) {
+            if(!(pair.getKey().equals("telnr_mob") || pair.getKey().equals("telnr_vast") || pair.getKey().equals("tussenvoegsel"))) {
                 mandatoryLabels.add(currentLabel);
                 mandatoryFields.add(pair.getValue());
             }
