@@ -15,6 +15,7 @@ import static javadbkoppelingws2.Tab.conn;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -29,6 +30,8 @@ public final class OverviewPanel extends Tab {
     JButton schoolButton = new JButton("Overzicht op school");
     JButton countryHHSButton = new JButton("Overzicht op land (hhs)");
     JButton populariteitSoortButton = new JButton("Overzicht populariteit op onderwijssoort");
+    
+    JLabel populariteitLabel = new JLabel("Populariteit per onderwijs soort per jaar");
 
     ArrayList<String> opleidingen = new ArrayList<>();
     JComboBox<String> opleidingBox = new JComboBox();
@@ -104,8 +107,8 @@ public final class OverviewPanel extends Tab {
         trajectButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         schoolButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         populariteitSoortButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-
         opleidingBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        populariteitLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
 
         opleidingBox.setLocation(X_MARGIN, Y_MARGIN * 6 + COMPONENT_HEIGHT * 5);
         countryExchangeButton.setLocation(X_MARGIN, Y_MARGIN);
@@ -113,6 +116,7 @@ public final class OverviewPanel extends Tab {
         trajectButton.setLocation(X_MARGIN, Y_MARGIN * 3 + COMPONENT_HEIGHT * 2);
         schoolButton.setLocation(X_MARGIN, Y_MARGIN * 4 + COMPONENT_HEIGHT * 3);
         populariteitSoortButton.setLocation(X_MARGIN, Y_MARGIN * 5 + COMPONENT_HEIGHT * 4);
+        populariteitLabel.setLocation(X_MARGIN*2+COMPONENT_WIDTH, Y_MARGIN * 5 + COMPONENT_HEIGHT * 4);
 
         countryExchangeButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_exchangeStudent));
         countryHHSButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_HHS_Student));
@@ -127,6 +131,7 @@ public final class OverviewPanel extends Tab {
         add(schoolButton);
         add(populariteitSoortButton);
         add(opleidingBox);
+        add(populariteitLabel);
         fillComboBox();
     }
 
