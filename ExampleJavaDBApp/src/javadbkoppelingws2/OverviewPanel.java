@@ -30,8 +30,8 @@ public final class OverviewPanel extends Tab {
     JButton schoolButton = new JButton("Overzicht op school");
     JButton countryHHSButton = new JButton("Overzicht op land (hhs)");
     JButton populariteitSoortButton = new JButton("Overzicht populariteit op onderwijssoort");
-    
-    JLabel populariteitLabel = new JLabel("Populariteit per onderwijs soort per jaar");
+
+    JLabel opleidingLabel = new JLabel("Overzicht van Studenten per opleiding");
 
     ArrayList<String> opleidingen = new ArrayList<>();
     JComboBox<String> opleidingBox = new JComboBox();
@@ -108,7 +108,7 @@ public final class OverviewPanel extends Tab {
         schoolButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         populariteitSoortButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         opleidingBox.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        populariteitLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        opleidingLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
 
         opleidingBox.setLocation(X_MARGIN, Y_MARGIN * 6 + COMPONENT_HEIGHT * 5);
         countryExchangeButton.setLocation(X_MARGIN, Y_MARGIN);
@@ -116,7 +116,7 @@ public final class OverviewPanel extends Tab {
         trajectButton.setLocation(X_MARGIN, Y_MARGIN * 3 + COMPONENT_HEIGHT * 2);
         schoolButton.setLocation(X_MARGIN, Y_MARGIN * 4 + COMPONENT_HEIGHT * 3);
         populariteitSoortButton.setLocation(X_MARGIN, Y_MARGIN * 5 + COMPONENT_HEIGHT * 4);
-        populariteitLabel.setLocation(X_MARGIN*2+COMPONENT_WIDTH, Y_MARGIN * 5 + COMPONENT_HEIGHT * 4);
+        opleidingLabel.setLocation(X_MARGIN * 2 + COMPONENT_WIDTH, Y_MARGIN *6 + COMPONENT_HEIGHT * 5);
 
         countryExchangeButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_exchangeStudent));
         countryHHSButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_HHS_Student));
@@ -131,7 +131,7 @@ public final class OverviewPanel extends Tab {
         add(schoolButton);
         add(populariteitSoortButton);
         add(opleidingBox);
-        add(populariteitLabel);
+        add(opleidingLabel);
         fillComboBox();
     }
 
