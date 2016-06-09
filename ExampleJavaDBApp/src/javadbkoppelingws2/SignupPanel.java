@@ -29,8 +29,8 @@ import javax.swing.JTable;
  */
 public class SignupPanel extends Tab {
 
-    MyTableModel model;
-    MyTableModel model2;
+    MyTableModel studentModel;
+    MyTableModel trajectModel;
     String[][] dataValues = {};
     String[][] dataValues2 = {};
     String[] columnNames = {};
@@ -43,10 +43,10 @@ public class SignupPanel extends Tab {
     JButton signupButton = new JButton("Student inschrijven");
     JButton trajectZoekenButton = new JButton("Zoeken");
     JButton studentZoekenButton = new JButton("Zoeken");
-    
+
     JTextField trajectField = new JTextField();
     JTextField student_idField = new JTextField();
-    JTextField studentVoornaamField= new JTextField();
+    JTextField studentVoornaamField = new JTextField();
     JTextField studentAchternaamField = new JTextField();
     JTextField trajectNaamField = new JTextField();
 
@@ -61,7 +61,7 @@ public class SignupPanel extends Tab {
 
         addStudentTable();
         addTrajectTable();
-        
+
         signupButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         signupButton.setLocation(X_MARGIN + 100, Y_MARGIN + 100);
 
@@ -76,32 +76,34 @@ public class SignupPanel extends Tab {
 
         studentLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         studentLabel.setLocation(X_MARGIN, Y_MARGIN + 50);
-        
+
         studentVoornaamLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         studentVoornaamLabel.setLocation(X_MARGIN + 500, Y_MARGIN);
-        
+
         studentAchternaamLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         studentAchternaamLabel.setLocation(X_MARGIN + 500, Y_MARGIN + 50);
-        
+
         studentZoekenButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         studentZoekenButton.setLocation(X_MARGIN + 600, Y_MARGIN + 100);
-        
+
         studentVoornaamField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         studentVoornaamField.setLocation(X_MARGIN + 600, Y_MARGIN);
-        
+
         studentAchternaamField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         studentAchternaamField.setLocation(X_MARGIN + 600, Y_MARGIN + 50);
-        
+
         trajectNaamLabel.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectNaamLabel.setLocation(X_MARGIN + 500, Y_MARGIN + 525);
-        
+
         trajectNaamField.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectNaamField.setLocation(X_MARGIN + 600, Y_MARGIN + 525);
-        
+
         trajectZoekenButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         trajectZoekenButton.setLocation(X_MARGIN + 600, Y_MARGIN + 575);
-        
+
         signupButton.addActionListener(new SignupPanel.ButtonListener(SignupPanel.ButtonAction.Inschrijven));
+        studentZoekenButton.addActionListener(new SignupPanel.ButtonListener(SignupPanel.ButtonAction.zoekStudent));
+        trajectZoekenButton.addActionListener(new SignupPanel.ButtonListener(SignupPanel.ButtonAction.zoekTraject));
 
         add(signupButton);
         add(trajectField);
@@ -115,7 +117,7 @@ public class SignupPanel extends Tab {
         add(trajectNaamField);
         add(trajectNaamLabel);
         add(trajectZoekenButton);
-        add(studentZoekenButton);      
+        add(studentZoekenButton);
     }
 
     public ResultSet doQuery(String query) {
@@ -160,7 +162,7 @@ public class SignupPanel extends Tab {
             if (trajectTable == null || rightPanel2 == null) {
                 trajectTable = new JTable(new MyTableModel(dataValues2, columnNames2));
 
-                model2 = (MyTableModel) trajectTable.getModel();
+                trajectModel = (MyTableModel) trajectTable.getModel();
 
                 trajectTable.setShowVerticalLines(false);
                 trajectTable.setRowSelectionAllowed(true);
@@ -172,8 +174,8 @@ public class SignupPanel extends Tab {
                 add(rightPanel2);
 
             }
-            model2.setColumnNames(columnNames2);
-            model2.setNewData(dataValues2);
+            trajectModel.setColumnNames(columnNames2);
+            trajectModel.setNewData(dataValues2);
             repaint();
         } catch (SQLException e2) {
             //TODO
@@ -214,7 +216,7 @@ public class SignupPanel extends Tab {
             if (studentTable == null || rightPanel == null) {
                 studentTable = new JTable(new MyTableModel(dataValues, columnNames));
 
-                model = (MyTableModel) studentTable.getModel();
+                studentModel = (MyTableModel) studentTable.getModel();
 
                 studentTable.setShowVerticalLines(false);
                 studentTable.setRowSelectionAllowed(true);
@@ -226,8 +228,8 @@ public class SignupPanel extends Tab {
                 add(rightPanel);
 
             }
-            model.setColumnNames(columnNames);
-            model.setNewData(dataValues);
+            studentModel.setColumnNames(columnNames);
+            studentModel.setNewData(dataValues);
             repaint();
         } catch (SQLException e2) {
             //TODO
@@ -235,6 +237,7 @@ public class SignupPanel extends Tab {
     }
 
     private enum ButtonAction {
+
         Inschrijven, zoekTraject, zoekStudent
     }
 
@@ -249,35 +252,34 @@ public class SignupPanel extends Tab {
 
         public String getDate() {
             Date date = new Date();
-            String modifiedDate= new SimpleDateFormat("yyyy/MM/dd").format(date);
-            
+            String modifiedDate = new SimpleDateFormat("yyyy/MM/dd").format(date);
+
             /*    Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, 1);
-            SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
+             cal.add(Calendar.DATE, 1);
+             SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
 
-            String formatted = format1.format(cal.getTime());
+             String formatted = format1.format(cal.getTime());
 
-            return formatted;
-                */
+             return formatted;
+             */
             return modifiedDate;
         }
 
         public void errorBox(String infoMessage) {
             JOptionPane.showMessageDialog(null, infoMessage, "Error...", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         public void infoBox(String infoMessage) {
             JOptionPane.showMessageDialog(null, infoMessage, "Succes", JOptionPane.INFORMATION_MESSAGE);
         }
 
         public void actionPerformed(ActionEvent e) {
-            if ((action == SignupPanel.ButtonAction.Inschrijven) && (!trajectField.getText().equals("")) && (!student_idField.getText().equals(""))) {
+            if ((action == ButtonAction.Inschrijven) && (!trajectField.getText().equals("")) && (!student_idField.getText().equals(""))) {
                 Statement statement = null;
 
                 String traject = trajectField.getText();
                 String student_id = student_idField.getText();
                 String date = getDate();
-                System.out.println(date);
                 String query = "insert into Student_Traject "
                         + "VALUES("
                         + student_id
@@ -297,12 +299,104 @@ public class SignupPanel extends Tab {
                 }
 
             } else {
-                errorBox("Velden zijn niet ingevuld...");
+                //errorBox("Velden zijn niet ingevuld...");
             }
-            
-            if (action == ButtonAction.zoekStudent){
-                
+
+            if (action == ButtonAction.zoekStudent) {
+                String fN = studentVoornaamField.getText();
+                String sN = studentAchternaamField.getText();
+
+                String query = "SELECT achternaam, voornaam, tussenvoegsel, student_id "
+                        + "FROM Student "
+                        + "WHERE achternaam LIKE '%"
+                        + sN
+                        + "%' "
+                        + "AND voornaam LIKE '%"
+                        + fN
+                        + "%'; ";
+
+                ResultSet res2 = doQuery(query);
+
+                columnNames = new String[4];
+                columnNames[0] = "achternaam";
+                columnNames[1] = "voornaam";
+                columnNames[2] = "tussenvoegsel";
+                columnNames[3] = "student_id";
+
+                int rowCount = 0;
+                try {
+                    if (res2.last()) {
+                        rowCount = res2.getRow();
+                        res2.beforeFirst();
+                    }
+                    dataValues = new String[rowCount][columnNames.length];
+                    int counter = 0;
+                    while (res2.next()) {
+                        dataValues[counter][0] = res2.getString("Student.achternaam");
+                        dataValues[counter][1] = res2.getString("Student.voornaam");
+                        dataValues[counter][2] = res2.getString("Student.tussenvoegsel");
+                        dataValues[counter][3] = res2.getString("Student.student_id");
+                        counter++;
+                    }
+
+                    if (studentModel == null) {
+                        studentModel = new MyTableModel(dataValues, columnNames);
+                    }
+
+                    studentTable.setModel(studentModel);
+
+                    studentModel.setColumnNames(columnNames);
+                    studentModel.setNewData(dataValues);
+                    repaint();
+                } catch (SQLException e2) {
+                    //TODO
+                }
+
             }
+
+            if (action == ButtonAction.zoekTraject) {
+                String traject = trajectNaamField.getText();
+
+                String query = "SELECT naam, traject_id "
+                        + "FROM Traject "
+                        + "WHERE naam LIKE '%"
+                        + traject
+                        + "%';";
+
+                ResultSet res3 = doQuery(query);
+
+                columnNames2 = new String[2];
+                columnNames2[0] = "traject_id";
+                columnNames2[1] = "naam";
+
+                int rowCount = 0;
+                try {
+                    if (res3.last()) {
+                        rowCount = res3.getRow();
+                        res3.beforeFirst();
+                    }
+                    dataValues2 = new String[rowCount][columnNames2.length];
+                    int counter = 0;
+                    while (res3.next()) {
+                        dataValues2[counter][0] = res3.getString("Traject.traject_id");
+                        dataValues2[counter][1] = res3.getString("Traject.naam");
+                        counter++;
+                    }
+
+                    if (trajectModel == null) {
+                        trajectModel = new MyTableModel(dataValues, columnNames2);
+                    }
+
+                    trajectTable.setModel(trajectModel);
+
+                    trajectModel.setColumnNames(columnNames2);
+                    trajectModel.setNewData(dataValues2);
+                    repaint();
+                } catch (SQLException e2) {
+                    //TODO
+                }
+            }
+
         }
 
     }
