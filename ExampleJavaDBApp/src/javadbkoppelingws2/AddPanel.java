@@ -126,7 +126,7 @@ public class AddPanel extends Tab {
     }
     
     private enum SchoolComps{
-        schoolnaam(new JTextField(), new JLabel("schoolnaam: ")),
+        schoolnaam(new JTextField(), new JLabel("Schoolnaam: ")),
         stad(new JTextField(),new JLabel("Stad: ")),
         land(new JTextField(), new JLabel("Land: "));
         
@@ -147,6 +147,79 @@ public class AddPanel extends Tab {
         }   
     }
     
+    private enum BedrijfComps{
+        bedrijfsnaam(new JTextField(), new JLabel("Schoolnaam: ")),
+        huisnummer(new JTextField(),new JLabel("Huisnummer: ")),
+        straat(new JTextField(), new JLabel("Straatnaam: ")),
+        stad(new JTextField(), new JLabel("Stad: ")),
+        land(new JTextField(), new JLabel("Land: "));
+        
+        
+        private JLabel label;
+        private JTextField textField;
+        
+        BedrijfComps(JTextField textField, JLabel label){
+            this.label = label;
+            this.textField = textField;
+        }
+        
+        public JTextField getTextField(){
+            return textField;
+        }
+        
+        public JLabel getLabel(){
+            return label;
+        }   
+    }
+    
+    private enum OpleidingComps{
+        opleidingnaam(new JTextField(), new JLabel("Opleidingnaam: ")),
+        contactpersoon(new JTextField(),new JLabel("Contactpersoon ID: ")),
+        school(new JTextField(), new JLabel("Shool ID: "));
+        
+        
+        private JLabel label;
+        private JTextField textField;
+        
+        OpleidingComps(JTextField textField, JLabel label){
+            this.label = label;
+            this.textField = textField;
+        }
+        
+        public JTextField getTextField(){
+            return textField;
+        }
+        
+        public JLabel getLabel(){
+            return label;
+        }  
+    }
+    
+    private enum ContactComps{
+        voornaam(new JTextField(), new JLabel("Voornaam: ")),
+        tussenvoegsel(new JTextField(),new JLabel("Tussenvoegsel: ")),
+        achternaam(new JTextField(), new JLabel("Achternaam: ")),
+        email(new JTextField(), new JLabel("Email: ")),
+        telnr(new JTextField(), new JLabel("Telefoon nummer: "));
+        
+        
+        private JLabel label;
+        private JTextField textField;
+        
+        ContactComps(JTextField textField, JLabel label){
+            this.label = label;
+            this.textField = textField;
+        }
+        
+        public JTextField getTextField(){
+            return textField;
+        }
+        
+        public JLabel getLabel(){
+            return label;
+        }  
+    }
+    
     JButton addHHSStudentButton = new JButton("Voeg een HHS-student toe");
     JButton addExchangeStudentButton = new JButton("Voeg een Exchange-student toe");
     JButton addStageButton = new JButton("Voeg een Stage toe");
@@ -154,6 +227,7 @@ public class AddPanel extends Tab {
     JButton addSchoolButton = new JButton("Voeg een School toe");
     JButton addBedrijfButton = new JButton("Voeg een Bedrijf toe");
     JButton addOpleidingButton = new JButton("Voeg een Opleiding toe");
+    JButton addContactButton = new JButton("Voeg een Contactpersoon toe");
 
     public AddPanel(int width, int height) {
         super(width, height);
@@ -161,6 +235,9 @@ public class AddPanel extends Tab {
     }
 
     public void addComponents() {
+        
+        int xmarg = 15;
+        int ymarg = 15;
         
         //HHSStudentButton
         addHHSStudentButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
@@ -173,7 +250,7 @@ public class AddPanel extends Tab {
 
         //ExchangeStudentButton
         addExchangeStudentButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        addExchangeStudentButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH, addHHSStudentButton.getY());
+        addExchangeStudentButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH + xmarg, addHHSStudentButton.getY());
         addExchangeStudentButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -183,7 +260,7 @@ public class AddPanel extends Tab {
         
         //StageButton
         addStageButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        addStageButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + COMPONENT_HEIGHT);
+        addStageButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + COMPONENT_HEIGHT + ymarg);
         addStageButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -193,7 +270,7 @@ public class AddPanel extends Tab {
         
         //StudieButton
         addStudieButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        addStudieButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH, addHHSStudentButton.getY() + COMPONENT_HEIGHT);
+        addStudieButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH + xmarg, addHHSStudentButton.getY() + COMPONENT_HEIGHT + ymarg);
         addStudieButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -203,31 +280,41 @@ public class AddPanel extends Tab {
         
         //SchoolButton
         addSchoolButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        addSchoolButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 2));
+        addSchoolButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 2) + (ymarg * 2));
         addSchoolButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                openStudieFrame();
+                openSchoolFrame();
             }
         });
         
         //BedrijfButton
         addBedrijfButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        addBedrijfButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH, addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 2));
+        addBedrijfButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH + xmarg, addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 2) + (ymarg * 2));
         addBedrijfButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                openStudieFrame();
+                openBedrijfFrame();
             }
         });
         
         //OpleidingButton
         addOpleidingButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
-        addOpleidingButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 3));
+        addOpleidingButton.setLocation(addHHSStudentButton.getX(), addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 3)+ (ymarg * 3));
         addOpleidingButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                openStudieFrame();
+                openOpleidingFrame();
+            }
+        });
+        
+        //ContactButton
+        addContactButton.setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        addContactButton.setLocation(addHHSStudentButton.getX() + COMPONENT_WIDTH+ xmarg, addHHSStudentButton.getY() + (COMPONENT_HEIGHT * 3)+ (ymarg * 3));
+        addContactButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                openContactFrame();
             }
         });
 
@@ -239,6 +326,7 @@ public class AddPanel extends Tab {
         add(addSchoolButton);
         add(addBedrijfButton);
         add(addOpleidingButton);
+        add(addContactButton);
     }
 
     public void openHHSStudentFrame() {
@@ -304,7 +392,7 @@ public class AddPanel extends Tab {
                 Statement statement = null;
                 ResultSet resultset = null;
                 int oldRowCount = getRows("Student");
-                String regexA = "[a-zA-Z]+";
+                String regexA = "[a-zA-Z ]+";
                 String regex2 = "[0-9-]+";
                 String opleidingText = textFieldArray.get(7).getText();
 
@@ -463,7 +551,7 @@ public class AddPanel extends Tab {
                         || !textFieldArray.get(5).getText().matches(regex2)
                         || !textFieldArray.get(6).getText().matches(regex2)) {
                     JOptionPane.showMessageDialog(studentFrame, "Bepaalde velden zijn niet juist ingevoerd!");
-                } else if (!textFieldArray.get(1).getText().isEmpty() && !textFieldArray.get(1).getText().matches(regexA)) {
+                } else if (!textFieldArray.get(1).getText().isEmpty() && !textFieldArray.get(1).getText().matches(regexB)) {
                     JOptionPane.showMessageDialog(studentFrame, "Tussenvoegsel mag alleen letters bevatten!");
                 } else if (!textFieldArray.get(3).getText().equals("Male") && !textFieldArray.get(3).getText().equals("Female")) {
                     JOptionPane.showMessageDialog(studentFrame, "U moet 'Male' voor man of 'Female' voor vrouw invullen bij geslacht. ");
@@ -730,18 +818,405 @@ public class AddPanel extends Tab {
         studiePanel.add(addButton);  
     }
     
+    public void openSchoolFrame(){
+        JFrame schoolFrame = new JFrame();
+        schoolFrame.setVisible(true);
+        schoolFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        schoolFrame.setSize(700, 500);
+
+        JPanel schoolPanel = new JPanel();
+        schoolPanel.setLayout(null);
+        schoolFrame.add(schoolPanel);
+
+        JButton cancelButton = new JButton("Cancel");
+        JButton addButton = new JButton("Voeg toe");
+        
+        ArrayList<JTextField> textFieldArray = new ArrayList<JTextField>();
+        ArrayList<JLabel> labelArray = new ArrayList<JLabel>();
+        ArrayList<JTextField> textArray = new ArrayList<JTextField>();
+        
+        SchoolComps[] StudentArray = SchoolComps.values();
+
+        for(SchoolComps i : StudentArray){
+            textFieldArray.add(i.getTextField());
+            labelArray.add(i.getLabel());
+        }
+        
+        textArray.add(textFieldArray.get(0));
+        textArray.add(textFieldArray.get(1));
+        textArray.add(textFieldArray.get(2));
+        
+        int xmarg = 180;
+        int ymarg = 15;
+
+        for (int i = 0; i < textFieldArray.size(); i++) {
+            textFieldArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            textFieldArray.get(i).setLocation(xmarg, ymarg + i * 45);
+            labelArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            labelArray.get(i).setLocation(textFieldArray.get(i).getX() - 155, textFieldArray.get(i).getY());
+
+            schoolPanel.add(textFieldArray.get(i));
+            schoolPanel.add(labelArray.get(i));
+        }
+        
+        cancelButton.setSize(90, 30);
+        cancelButton.setLocation(20, ymarg + (textFieldArray.size() * 45));
+        cancelButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                schoolFrame.dispose();
+            }
+        });
+
+        addButton.setSize(90, 30);
+        addButton.setLocation(COMPONENT_WIDTH, ymarg + (textFieldArray.size() * 45));
+        addButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Statement statement = null;
+                ResultSet resultset = null;
+                int oldRowCount = getRows("School");
+                String regexA = "[a-zA-Z]+";
+                String regexB = "[a-zA-Z ]+";
+                String regex1 = "[0-9]+";
+                String regex2 = "[0-9-()]+";
+                
+                System.out.println(createValuesQuery(textArray));
+                
+            if (textFieldArray.get(0).getText().isEmpty()
+                        || textFieldArray.get(1).getText().isEmpty()
+                        || textFieldArray.get(2).getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(schoolFrame, "U hebt niet alles ingevuld. ");
+                } else if (!textFieldArray.get(0).getText().matches(regexB)
+                        || !textFieldArray.get(1).getText().matches(regexB)
+                        || !textFieldArray.get(2).getText().matches(regexB)) {
+                    JOptionPane.showMessageDialog(schoolFrame, "Bepaalde velden zijn niet juist ingevoerd!");
+                } else {
+                    try {
+                        statement = DataSourceV2.getConnection().createStatement();
+                        statement.executeUpdate("INSERT INTO School (schoolnaam, stad, land)" + createValuesQuery(textArray));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AddPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    if (getRows("School") == oldRowCount + 1) {
+                        JOptionPane.showMessageDialog(schoolFrame, "School is toegevoegd!");
+                    } else {
+                        JOptionPane.showMessageDialog(schoolFrame, "Er is iets fouts gegaan. Probeer later opnieuw.");
+                    }         
+                }
+            }
+        });
+        
+        schoolPanel.add(cancelButton);
+        schoolPanel.add(addButton);  
+    }
+    
+    public void openBedrijfFrame(){
+        JFrame bedrijfFrame = new JFrame();
+        bedrijfFrame.setVisible(true);
+        bedrijfFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        bedrijfFrame.setSize(700, 500);
+
+        JPanel bedrijfPanel = new JPanel();
+        bedrijfPanel.setLayout(null);
+        bedrijfFrame.add(bedrijfPanel);
+
+        JButton cancelButton = new JButton("Cancel");
+        JButton addButton = new JButton("Voeg toe");
+        
+        ArrayList<JTextField> textFieldArray = new ArrayList<JTextField>();
+        ArrayList<JLabel> labelArray = new ArrayList<JLabel>();
+        ArrayList<JTextField> textArray = new ArrayList<JTextField>();
+        
+        BedrijfComps[] StudentArray = BedrijfComps.values();
+
+        for(BedrijfComps i : StudentArray){
+            textFieldArray.add(i.getTextField());
+            labelArray.add(i.getLabel());
+        }
+        
+        textArray.add(textFieldArray.get(0));
+        textArray.add(textFieldArray.get(1));
+        textArray.add(textFieldArray.get(2));
+        textArray.add(textFieldArray.get(3));
+        textArray.add(textFieldArray.get(4));
+        
+        int xmarg = 180;
+        int ymarg = 15;
+
+        for (int i = 0; i < textFieldArray.size(); i++) {
+            textFieldArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            textFieldArray.get(i).setLocation(xmarg, ymarg + i * 45);
+            labelArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            labelArray.get(i).setLocation(textFieldArray.get(i).getX() - 155, textFieldArray.get(i).getY());
+
+            bedrijfPanel.add(textFieldArray.get(i));
+            bedrijfPanel.add(labelArray.get(i));
+        }
+        
+        cancelButton.setSize(90, 30);
+        cancelButton.setLocation(20, ymarg + (textFieldArray.size() * 45));
+        cancelButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                bedrijfFrame.dispose();
+            }
+        });
+
+        addButton.setSize(90, 30);
+        addButton.setLocation(COMPONENT_WIDTH, ymarg + (textFieldArray.size() * 45));
+        addButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Statement statement = null;
+                ResultSet resultset = null;
+                int oldRowCount = getRows("Bedrijf");
+                String regexA = "[a-zA-Z]+";
+                String regexB = "[a-zA-Z ]+";
+                String regex1 = "[0-9a-z]+";
+                String regex2 = "[0-9-()]+";
+                
+                System.out.println(createValuesQuery(textArray));
+                
+            if (textFieldArray.get(0).getText().isEmpty()
+                        || textFieldArray.get(1).getText().isEmpty()
+                        || textFieldArray.get(2).getText().isEmpty()
+                        || textFieldArray.get(3).getText().isEmpty()
+                        || textFieldArray.get(4).getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(bedrijfFrame, "U hebt niet alles ingevuld. ");
+                } else if (!textFieldArray.get(0).getText().matches(regexB)
+                        || !textFieldArray.get(1).getText().matches(regex1)
+                        || !textFieldArray.get(2).getText().matches(regexB)
+                        || !textFieldArray.get(3).getText().matches(regexB)
+                        || !textFieldArray.get(4).getText().matches(regexB)) {
+                    JOptionPane.showMessageDialog(bedrijfFrame, "Bepaalde velden zijn niet juist ingevoerd!");
+                } else {
+                    try {
+                        statement = DataSourceV2.getConnection().createStatement();
+                        statement.executeUpdate("INSERT INTO Bedrijf (bedrijfsnaam, huisnr, straat, stad, land)" + createValuesQuery(textArray));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AddPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    if (getRows("Bedrijf") == oldRowCount + 1) {
+                        JOptionPane.showMessageDialog(bedrijfFrame, "Bedrijf is toegevoegd!");
+                    } else {
+                        JOptionPane.showMessageDialog(bedrijfFrame, "Er is iets fouts gegaan. Probeer later opnieuw.");
+                    }         
+                }
+            }
+        });
+        
+        bedrijfPanel.add(cancelButton);
+        bedrijfPanel.add(addButton);  
+    }
+    
+    public void openOpleidingFrame(){
+        JFrame opleidingFrame = new JFrame();
+        opleidingFrame.setVisible(true);
+        opleidingFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        opleidingFrame.setSize(700, 500);
+
+        JPanel opleidingPanel = new JPanel();
+        opleidingPanel.setLayout(null);
+        opleidingFrame.add(opleidingPanel);
+
+        JButton cancelButton = new JButton("Cancel");
+        JButton addButton = new JButton("Voeg toe");
+
+        ArrayList<JTextField> textFieldArray = new ArrayList<JTextField>();
+        ArrayList<JLabel> labelArray = new ArrayList<JLabel>();
+        ArrayList<JTextField> textForStudentArray = new ArrayList<JTextField>(); 
+        
+        OpleidingComps[] StudentArray = OpleidingComps.values();
+
+        for(OpleidingComps i : StudentArray){
+            textFieldArray.add(i.getTextField());
+            labelArray.add(i.getLabel());
+        }
+        
+        //Add all specific textfields to an array
+        textForStudentArray.add(textFieldArray.get(0));
+        textForStudentArray.add(textFieldArray.get(1));
+        textForStudentArray.add(textFieldArray.get(2));
+
+        int xmarg = 180;
+        int ymarg = 15;
+
+        for (int i = 0; i < textFieldArray.size(); i++) {
+            textFieldArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            textFieldArray.get(i).setLocation(xmarg, ymarg + i * 45);
+            labelArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            labelArray.get(i).setLocation(textFieldArray.get(i).getX() - 155, textFieldArray.get(i).getY());
+
+            opleidingPanel.add(textFieldArray.get(i));
+            opleidingPanel.add(labelArray.get(i));
+        }
+
+        cancelButton.setSize(90, 30);
+        cancelButton.setLocation(20, ymarg + (textFieldArray.size() * 45));
+        cancelButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                opleidingFrame.dispose();
+            }
+        });
+
+        addButton.setSize(90, 30);
+        addButton.setLocation(COMPONENT_WIDTH, ymarg + (textFieldArray.size() * 45));
+        addButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Statement statement = null;
+                ResultSet resultset = null;
+                int oldRowCount = getRows("Opleiding");
+                String regexA = "[a-zA-Z ]+";
+                String regex2 = "[0-9]+";
+
+                if (textFieldArray.get(0).getText().isEmpty()
+                        || textFieldArray.get(1).getText().isEmpty()
+                        || textFieldArray.get(2).getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(opleidingFrame, "Bepaalde velden zijn niet ingevoerd. ");
+                } else if (!textFieldArray.get(0).getText().matches(regexA)
+                        || !textFieldArray.get(1).getText().matches(regex2)
+                        || !textFieldArray.get(2).getText().matches(regex2)) {
+                    JOptionPane.showMessageDialog(opleidingFrame, "Bepaalde velden zijn niet juist ingevoerd!");
+                } else if (!checkContact(textFieldArray.get(1).getText())) {
+                    JOptionPane.showMessageDialog(opleidingFrame, "U hebt geen juiste contact ID ingevoerd. ");
+                } else if (!checkSchool(textFieldArray.get(2).getText())) {
+                    JOptionPane.showMessageDialog(opleidingFrame, "U hebt geen juiste school ID ingevoerd. ");
+                } else {
+                    try {
+                        statement = DataSourceV2.getConnection().createStatement();
+                        statement.executeUpdate("INSERT INTO Opleiding (opleiding_naam, contpers_id, school_id)" + createValuesQuery(textForStudentArray));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AddPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    if (getRows("Opleiding") == oldRowCount + 1) {
+                        JOptionPane.showMessageDialog(opleidingFrame, "Opleiding is toegevoegd.");
+                    } else {
+                        JOptionPane.showMessageDialog(opleidingFrame, "Er is iets fouts gegaan bij het toevoegen. Probeer het later opnieuw of neem contact op met uw systeembeheerder.");
+                    }
+                }
+            }
+        });
+
+        opleidingPanel.add(cancelButton);
+        opleidingPanel.add(addButton);
+     
+    }
+    
+    public void openContactFrame(){
+        JFrame contactFrame = new JFrame();
+        contactFrame.setVisible(true);
+        contactFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        contactFrame.setSize(700, 500);
+
+        JPanel contactPanel = new JPanel();
+        contactPanel.setLayout(null);
+        contactFrame.add(contactPanel);
+
+        JButton cancelButton = new JButton("Cancel");
+        JButton addButton = new JButton("Voeg toe");
+
+        ArrayList<JTextField> textFieldArray = new ArrayList<JTextField>();
+        ArrayList<JLabel> labelArray = new ArrayList<JLabel>();
+        ArrayList<JTextField> textForStudentArray = new ArrayList<JTextField>(); 
+        
+        ContactComps[] StudentArray = ContactComps.values();
+
+        for(ContactComps i : StudentArray){
+            textFieldArray.add(i.getTextField());
+            labelArray.add(i.getLabel());
+        }
+        
+        //Add all specific textfields to an array
+        textForStudentArray.add(textFieldArray.get(0));
+        textForStudentArray.add(textFieldArray.get(1));
+        textForStudentArray.add(textFieldArray.get(2));
+        textForStudentArray.add(textFieldArray.get(3));
+        textForStudentArray.add(textFieldArray.get(4));
+
+        int xmarg = 180;
+        int ymarg = 15;
+
+        for (int i = 0; i < textFieldArray.size(); i++) {
+            textFieldArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            textFieldArray.get(i).setLocation(xmarg, ymarg + i * 45);
+            labelArray.get(i).setSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+            labelArray.get(i).setLocation(textFieldArray.get(i).getX() - 155, textFieldArray.get(i).getY());
+
+            contactPanel.add(textFieldArray.get(i));
+            contactPanel.add(labelArray.get(i));
+        }
+
+        cancelButton.setSize(90, 30);
+        cancelButton.setLocation(20, ymarg + (textFieldArray.size() * 45));
+        cancelButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                contactFrame.dispose();
+            }
+        });
+
+        addButton.setSize(90, 30);
+        addButton.setLocation(COMPONENT_WIDTH, ymarg + (textFieldArray.size() * 45));
+        addButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Statement statement = null;
+                ResultSet resultset = null;
+                int oldRowCount = getRows("Contactpersoon");
+                String regexA = "[a-zA-Z ]+";
+                String regex2 = "[0-9-()]+";
+
+                if (textFieldArray.get(0).getText().isEmpty()
+                        || textFieldArray.get(1).getText().isEmpty()
+                        || textFieldArray.get(2).getText().isEmpty()
+                        || textFieldArray.get(3).getText().isEmpty()
+                        || textFieldArray.get(4).getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(contactFrame, "Bepaalde velden zijn niet ingevoerd. ");
+                } else if (!textFieldArray.get(0).getText().matches(regexA)
+                        || !textFieldArray.get(1).getText().matches(regexA)
+                        || !textFieldArray.get(2).getText().matches(regexA)
+                        || !textFieldArray.get(4).getText().matches(regex2)) {
+                    JOptionPane.showMessageDialog(contactFrame, "Bepaalde velden zijn niet juist ingevoerd!");
+                } else {
+                    try {
+                        statement = DataSourceV2.getConnection().createStatement();
+                        statement.executeUpdate("INSERT INTO Contactpersoon (voornaam, tussenvoegsel, achternaam, email, telnr)" + createValuesQuery(textForStudentArray));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AddPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    if (getRows("Contactpersoon") == oldRowCount + 1) {
+                        JOptionPane.showMessageDialog(contactFrame, "Contactpersoon is toegevoegd.");
+                    } else {
+                        JOptionPane.showMessageDialog(contactFrame, "Er is iets fouts gegaan bij het toevoegen. Probeer het later opnieuw of neem contact op met uw systeembeheerder.");
+                    }
+                }
+            }
+        });
+
+        contactPanel.add(cancelButton);
+        contactPanel.add(addButton);
+     
+    }
+    
     //Creates a query with values based on the amount of textfields | TFA stands for TextFieldArray
     public String createValuesQuery(ArrayList<JTextField> TFA) {
         StringBuilder sb = new StringBuilder();
         for (JTextField i : TFA) {
             if (TFA.size() == 1) {
-                sb.append("VALUES ( '" + i.getText().replaceAll("\\s+", "") + "') ");
+                sb.append("VALUES ( '" + i.getText() + "') ");
             } else if (i == TFA.get(0)) {
-                sb.append("VALUES ( '" + i.getText().replaceAll("\\s+", "") + "', ");
+                sb.append("VALUES ( '" + i.getText() + "', ");
             } else if (i == TFA.get(TFA.size() - 1)) {
-                sb.append("'" + i.getText().replaceAll("\\s+", "") + "')");
+                sb.append("'" + i.getText() + "')");
             } else {
-                sb.append("'" + i.getText().replaceAll("\\s+", "") + "', ");
+                sb.append("'" + i.getText() + "', ");
             }
         }
         return sb.toString();
@@ -754,13 +1229,13 @@ public class AddPanel extends Tab {
         StringBuilder sb = new StringBuilder();
         for (JTextField i : TFA) {
             if (TFA.size() == 1) {
-                sb.append("VALUES ('" + studentID + "', '" + i.getText().replaceAll("\\s+", "") + "') ");
+                sb.append("VALUES ('" + studentID + "', '" + i.getText() + "') ");
             } else if (i == TFA.get(0)) {
-                sb.append("VALUES ('" + studentID + "', '" + i.getText().replaceAll("\\s+", "") + "', ");
+                sb.append("VALUES ('" + studentID + "', '" + i.getText() + "', ");
             } else if (i == TFA.get(TFA.size() - 1)) {
-                sb.append("'" + i.getText().replaceAll("\\s+", "") + "')");
+                sb.append("'" + i.getText() + "')");
             } else {
-                sb.append("'" + i.getText().replaceAll("\\s+", "") + "', ");
+                sb.append("'" + i.getText() + "', ");
             }
         }
         return sb.toString();
@@ -832,6 +1307,24 @@ public class AddPanel extends Tab {
             try {
                 Statement statement = DataSourceV2.getConnection().createStatement();
                 ResultSet resultset = statement.executeQuery("SELECT * FROM Bedrijf WHERE bedrijf_id = " + bedrijfID);
+                resultset.next();
+                if (resultset.getRow() == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(AddPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+    
+        public boolean checkContact(String ContactID){
+        if (isInteger(ContactID)) {
+            try {
+                Statement statement = DataSourceV2.getConnection().createStatement();
+                ResultSet resultset = statement.executeQuery("SELECT * FROM Contactpersoon WHERE contpers_id = " + ContactID);
                 resultset.next();
                 if (resultset.getRow() == 1) {
                     return true;
