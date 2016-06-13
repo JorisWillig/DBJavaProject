@@ -28,7 +28,8 @@ CREATE TABLE `Bedrijf`
 (
 `bedrijf_id` int(15) NOT NULL AUTO_INCREMENT,
 `bedrijfsnaam` varchar(45) NOT NULL,
-`adres` varchar(45) NOT NULL,
+`huisnr` varchar(45) NOT NULL,
+`straat` varchar(45) NOT NULL,
 `stad` varchar(45) NOT NULL,
 `land` varchar(45) NOT NULL,
 PRIMARY KEY (`bedrijf_id`)) ENGINE=InnoDB;
