@@ -70,7 +70,7 @@ public class SearchPanel extends Tab {
     MyTableModel overViewModel;
 
     private enum ButtonAction {
-        ZoekStudenten, ZoekLocatie, Edit, ScoreOverview
+        ZoekEntiteit, ZoekLocatie, Edit, ScoreOverview
     }
 
     public SearchPanel(int width, int height) {
@@ -116,7 +116,7 @@ public class SearchPanel extends Tab {
             add(textFields.get(i));
         }
 
-        studentSearchButton.addActionListener(new ButtonListener(ButtonAction.ZoekStudenten));
+        studentSearchButton.addActionListener(new ButtonListener(ButtonAction.ZoekEntiteit));
         locationSearchButton.addActionListener(new ButtonListener(ButtonAction.ZoekLocatie));
     }
 
@@ -154,7 +154,7 @@ public class SearchPanel extends Tab {
         }
 
         public void actionPerformed(ActionEvent e) {
-            if (action == ButtonAction.ZoekStudenten) {
+            if (action == ButtonAction.ZoekEntiteit) {
                 String fN = firstNameBox.getText();
                 String iF = infixBox.getText();
                 String sN = surNameBox.getText();
@@ -162,26 +162,20 @@ public class SearchPanel extends Tab {
                 String traj = trajectoryBox.getText();
 
                 String query = "SELECT Student.student_id, voornaam, "
-                        + "tussenvoegsel, achternaam, email, naam "
+                        + "tussenvoegsel, achternaam, email "
                         + "FROM Student "
-                        + "LEFT JOIN Student_Traject "
-                        + "ON Student.student_id = Student_Traject.student_id "
-                        + "LEFT JOIN Traject "
-                        + "ON Student_Traject.traject_id = Traject.traject_id "
                         + "WHERE voornaam LIKE '%" + fN + "%' "
                         + "AND COALESCE(tussenvoegsel, ' ') LIKE '%" + iF + "%' "
                         + "AND achternaam LIKE '%" + sN + "%' "
-                        + "AND email LIKE '%" + em + "%' "
-                        + "AND COALESCE(naam, ' ') LIKE '%" + traj + "%'; ";
+                        + "AND email LIKE '%" + em + "%';";
                 ResultSet res = doQuery(query);
 
-                columnNames = new String[6];
+                columnNames = new String[5];
                 columnNames[0] = "ID";
                 columnNames[1] = "Voornaam";
                 columnNames[2] = "Tussenvoegsel";
                 columnNames[3] = "Achternaam";
                 columnNames[4] = "Emailadres";
-                columnNames[5] = "Traject";
 
                 int rowCount = 0;
                 try {
@@ -197,7 +191,6 @@ public class SearchPanel extends Tab {
                         dataValues[counter][2] = res.getString("tussenvoegsel");
                         dataValues[counter][3] = res.getString("achternaam");
                         dataValues[counter][4] = res.getString("email");
-                        dataValues[counter][5] = res.getString("naam");
                         counter++;
                     }
 

@@ -1,0 +1,5 @@
+1. Use case tests uitvoeren
+2. kritisch kijken naar requirementsdocument
+3. elkaars code doorkijken
+4. error guess testing
+5. Kritisch kijken naar EER, RRM, RIM
