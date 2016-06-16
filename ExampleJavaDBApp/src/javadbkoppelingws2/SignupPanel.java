@@ -5,6 +5,7 @@
  */
 package javadbkoppelingws2;
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -56,9 +57,12 @@ public class SignupPanel extends Tab {
     JLabel studentAchternaamLabel = new JLabel("Achternaam:");
     JLabel trajectNaamLabel = new JLabel("Traject naam:");
 
+    SignupPanel thisPanel;
+
     public SignupPanel(int width, int height) {
         super(width, height);
 
+        thisPanel = this;
         addStudentTable();
         addTrajectTable();
 
@@ -252,7 +256,8 @@ public class SignupPanel extends Tab {
 
         public String getDate() {
             Date date = new Date();
-            String modifiedDate = new SimpleDateFormat("yyyy/MM/dd").format(date);
+            String modifiedDate = (String) new SimpleDateFormat("yyyy/MM/dd").format(date);
+            System.out.println(modifiedDate);
 
             /*    Calendar cal = Calendar.getInstance();
              cal.add(Calendar.DATE, 1);
@@ -285,17 +290,17 @@ public class SignupPanel extends Tab {
                         + student_id
                         + ", "
                         + traject
-                        + ", 0, "
+                        + ", 0, '"
                         + date
-                        + ");";
-
+                        + "');";
+                System.out.println(query);
                 try {
                     statement = DataSourceV2.getConnection().createStatement();
                     statement.executeUpdate(query);
                     infoBox("Student: " + student_id + " is toegevoegd aan traject: " + traject);
                 } catch (SQLException ex) {
-                    errorBox("mysql error");
-                    Logger.getLogger(SignupPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(thisPanel, "Deze student is al ingeschreven voor dit traject", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
+                    System.out.println("duplicaat!");
                 }
 
             } else {
