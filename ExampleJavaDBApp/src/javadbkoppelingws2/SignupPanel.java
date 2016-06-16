@@ -257,16 +257,6 @@ public class SignupPanel extends Tab {
         public String getDate() {
             Date date = new Date();
             String modifiedDate = (String) new SimpleDateFormat("yyyy/MM/dd").format(date);
-            System.out.println(modifiedDate);
-
-            /*    Calendar cal = Calendar.getInstance();
-             cal.add(Calendar.DATE, 1);
-             SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
-
-             String formatted = format1.format(cal.getTime());
-
-             return formatted;
-             */
             return modifiedDate;
         }
 
@@ -293,14 +283,12 @@ public class SignupPanel extends Tab {
                         + ", 0, '"
                         + date
                         + "');";
-                System.out.println(query);
                 try {
                     statement = DataSourceV2.getConnection().createStatement();
                     statement.executeUpdate(query);
                     infoBox("Student: " + student_id + " is toegevoegd aan traject: " + traject);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(thisPanel, "Deze student is al ingeschreven voor dit traject", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
-                    System.out.println("duplicaat!");
                 }
 
             } else {
