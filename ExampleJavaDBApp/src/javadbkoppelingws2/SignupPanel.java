@@ -288,11 +288,14 @@ public class SignupPanel extends Tab {
                     statement.executeUpdate(query);
                     infoBox("Student: " + student_id + " is toegevoegd aan traject: " + traject);
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(thisPanel, "Deze student is al ingeschreven voor dit traject", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
+                    if(ex.toString().contains("Duplicate entry")) {
+                        JOptionPane.showMessageDialog(thisPanel, "Deze student is al ingeschreven voor dit traject", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
+                        
+                    } if(ex.toString().contains("foreign key constraint")) {
+                        JOptionPane.showMessageDialog(thisPanel, "Student of Traject bestaat niet", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
+                        
+                    }
                 }
-
-            } else {
-                //errorBox("Velden zijn niet ingevuld...");
             }
 
             if (action == ButtonAction.zoekStudent) {
