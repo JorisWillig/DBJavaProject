@@ -1,0 +1,3 @@
+Database: meru.hhs.nl:3306
+Gebruikersnaam: 15077179
+Wachtwoord: ox4Eth7ohp
