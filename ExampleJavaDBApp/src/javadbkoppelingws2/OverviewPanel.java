@@ -116,7 +116,7 @@ public final class OverviewPanel extends Tab {
         trajectButton.setLocation(X_MARGIN, Y_MARGIN * 3 + COMPONENT_HEIGHT * 2);
         schoolButton.setLocation(X_MARGIN, Y_MARGIN * 4 + COMPONENT_HEIGHT * 3);
         populariteitSoortButton.setLocation(X_MARGIN, Y_MARGIN * 5 + COMPONENT_HEIGHT * 4);
-        opleidingLabel.setLocation(X_MARGIN * 2 + COMPONENT_WIDTH, Y_MARGIN *6 + COMPONENT_HEIGHT * 5);
+        opleidingLabel.setLocation(X_MARGIN * 2 + COMPONENT_WIDTH, Y_MARGIN * 6 + COMPONENT_HEIGHT * 5);
 
         countryExchangeButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_exchangeStudent));
         countryHHSButton.addActionListener(new OverviewPanel.ButtonListener(OverviewPanel.ButtonAction.Overzicht_op_land_HHS_Student));
@@ -289,8 +289,17 @@ public final class OverviewPanel extends Tab {
                     landExchangeModel.setColumnNames(columnNames);
                     landExchangeModel.setNewData(dataValues);
                     repaint();
+
                 } catch (SQLException e2) {
                     //TODO
+                }
+                if (table.getSelectedRow() >= 0) {
+                    System.out.println("1");
+                    int row = table.getSelectedRow();
+                    Object land = table.getValueAt(1, row);
+                    land.toString();
+                    System.out.println(land);
+
                 }
             }
 
